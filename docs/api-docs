@@ -1,0 +1,95 @@
+openapi: 3.0.3
+info:
+  title: music-everywhere
+  description: |-
+    music-everywhere 프로젝트 API 문서입니다.
+    
+    프로젝트는 MSA 아키텍처로 개발되며, 모든 마이크로서비스의 API는 이 문서에서 보실 수 있습니다.
+    
+    정해진 개발 사항에 대해 문서화를 진행하며 기능 추가 시 마다 문서를 업데이트, GIT을 통해 코드와 함께 형상관리 할 예정입니다.
+    
+    프로젝트 링크:
+    - [music-everywhere](https://github.com/f-lab-edu/music-everywhere)
+  version: 1.0.0
+servers:
+  - url: /api/
+tags:
+  - name: users
+    description: 회원가입, 사용자 조회 등 사용자의 동작과 인증을 담당합니다
+
+
+paths:
+  /users:
+    post:
+      tags:
+        - users
+      summary: 회원가입
+      description: 서비스에 가입합니다. 중복된 이메일은 사용할 수 없습니다.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: 
+                  type: string
+                password:
+                  type: string
+                name:
+                  type: string
+                nickname:
+                  type: string
+      responses:
+        '200':
+          description: 회원가입 성공
+        '409':
+          description: 중복된 이메일
+          
+  /users/{email}/exists:
+    get:
+      tags:
+        - users
+      summary: 이메일 중복 검사
+      description: 가입 전 이미 존재하는 이메일인지 확인합니다.
+      parameters:
+        - in: path
+          name: email
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 중복되지 않은 이메일
+        '409':
+          description: 중복된 이메일
+  /users/{userId}:
+    get:
+      tags:
+        - users
+      summary: 사용자 조회
+      description: 사용자 번호를 통해 사용자의 정보를 조회합니다.
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 사용자 조회 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: integer
+                  email:
+                    type: string
+                  name:
+                    type: string
+                  nickname:
+                    type: string
+        '404':
+          description: 조회 실패, userId로 등록된 사용자가 없습니다.
+          
