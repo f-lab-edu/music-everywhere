@@ -76,6 +76,17 @@ paths:
           description: 중복되지 않은 이메일
         '409':
           description: 중복된 이메일
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorType:
+                    type: string
+                    example: DuplicateElementException
+                  msg:
+                    type: string
+                    example: '중복된 이메일입니다. email : test@email.com'
           
   /users/{userId}:
     get:
@@ -107,6 +118,17 @@ paths:
                     type: string
         '404':
           description: 조회 실패, userId로 등록된 사용자가 없습니다.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorType:
+                    type: string
+                    example: NoSuchElementException
+                  msg:
+                    type: string
+                    example: '찾으려는 사용자가 없습니다. id : 1'
           
           
   /groups:
