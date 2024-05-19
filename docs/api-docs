@@ -15,7 +15,10 @@ servers:
   - url: /api/
 tags:
   - name: users
-    description: 회원가입, 사용자 조회 등 사용자의 동작과 인증을 담당합니다
+    description: 회원가입, 사용자 조회 등 사용자의 동작과 인증을 담당합니다.
+  - name: groups
+    description: 그룹 자체를 관리합니다. 그룹의 생성, 삭제와 그룹원 관리를 담당합니다.
+    
 
 
 paths:
@@ -44,7 +47,18 @@ paths:
           description: 회원가입 성공
         '409':
           description: 중복된 이메일
-          
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorType:
+                    type: string
+                    example: DuplicateElementException
+                  msg:
+                    type: string
+                    example: '중복된 이메일입니다. email : test@email.com'
+                    
   /users/{email}/exists:
     get:
       tags:
@@ -62,6 +76,7 @@ paths:
           description: 중복되지 않은 이메일
         '409':
           description: 중복된 이메일
+          
   /users/{userId}:
     get:
       tags:
@@ -93,3 +108,40 @@ paths:
         '404':
           description: 조회 실패, userId로 등록된 사용자가 없습니다.
           
+          
+  /groups:
+    post:
+      tags:
+        - groups
+      summary: 그룹 생성
+      description: 새로운 그룹을 생성합니다.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                groupName:
+                  type: string
+                  description: 그룹 이름
+                groupDescription:
+                  type: string
+                  description: 그룹에 대한 설명
+                groupScope:
+                  type: string
+                  description: 그룹 공개 범위
+                  enum:
+                    - PUBLIC
+                    - PRIVATE
+                joinCondition:
+                  type: string
+                  description: 그룹 가입 조건
+                  enum:
+                    - OPEN
+                    - APPROVAL_REQUIRED
+                nickname:
+                  type: string
+                  description: 그룹에서 사용할 프로필 이름
+      responses:
+        '200':
+          description: 그룹 생성 성공
