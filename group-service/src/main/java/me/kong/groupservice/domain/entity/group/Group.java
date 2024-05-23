@@ -34,16 +34,21 @@ public class Group extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private State state;
 
+    @Column(name = "owner_user_id")
+    private Long ownerUserId;
+
+
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
     private List<Profile> profiles;
 
     @Builder
-    public Group(String name, String description, JoinCondition joinCondition, GroupScope groupScope, State state) {
+    public Group(String name, String description, JoinCondition joinCondition, GroupScope groupScope, State state, Long ownerUserId) {
         this.name = name;
         this.description = description;
         this.joinCondition = joinCondition;
         this.groupScope = groupScope;
         this.state = state;
+        this.ownerUserId = ownerUserId;
     }
 
 }
