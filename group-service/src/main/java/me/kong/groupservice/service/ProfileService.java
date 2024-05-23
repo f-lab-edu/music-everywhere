@@ -2,6 +2,7 @@ package me.kong.groupservice.service;
 
 import lombok.RequiredArgsConstructor;
 import me.kong.groupservice.common.JwtReader;
+import me.kong.groupservice.common.exception.NoLoggedInProfileException;
 import me.kong.groupservice.domain.entity.State;
 import me.kong.groupservice.domain.entity.profile.GroupRole;
 import me.kong.groupservice.domain.entity.group.Group;
@@ -9,6 +10,9 @@ import me.kong.groupservice.domain.entity.profile.Profile;
 import me.kong.groupservice.domain.repository.ProfileRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -29,4 +33,17 @@ public class ProfileService {
 
         profileRepository.save(profile);
     }
+
+    @Transactional(readOnly = true)
+    public Profile getLoggedInProfile(Long groupId) {
+        return getOptionalLoggedInProfile(groupId).orElseThrow(NoLoggedInProfileException::new);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Profile> getOptionalLoggedInProfile(Long groupId) {
+        Long userId = jwtReader.getUserId();
+
+        return profileRepository.findByUserIdAndGroupId(userId, groupId);
+    }
+
 }
