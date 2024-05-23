@@ -5,4 +5,5 @@
 > 이 서비스는 취미로 음악을 즐기는 것의 보편화를 위해 연주자들 간의 커넥션을 잇는 것을 목표로 합니다.
 
 ## Database ERD
-![image](https://github.com/f-lab-edu/music-everywhere/assets/70522355/983ad30d-70e4-4aaa-9aa6-aa0645d5ad54)
+![image](https://github.com/f-lab-edu/music-everywhere/assets/70522355/8aaa4dc7-4773-4f5f-b7fc-a12be1977eff)
+
