@@ -33,14 +33,19 @@ class GroupServiceTest {
     @Mock
     GroupMapper groupMapper;
 
+    SaveGroupRequestDto dto;
+    Group group;
+
+    @BeforeEach
+    void init() {
+        dto = mock(SaveGroupRequestDto.class);
+        group = mock(Group.class);
+    }
 
     @Test
     @DisplayName("그룹 생성에 성공한다")
     void successToCreateNewGroup() {
         //given
-        SaveGroupRequestDto dto = mock();
-        Group group = mock();
-
         when(groupMapper.toEntity(any(SaveGroupRequestDto.class))).thenReturn(group);
 
         //when
@@ -49,5 +54,15 @@ class GroupServiceTest {
         //then
         verify(groupRepository, times(1)).save(any(Group.class));
         verify(groupMapper, times(1)).toEntity(any(SaveGroupRequestDto.class));
+    }
+
+    @Test
+    @DisplayName("데이터베이스 문제가 있을 경우 예외가 발생한다")
+    void failToCreateNewGroupByDatabaseProblem() {
+        //given
+        when(groupRepository.save(any())).thenThrow(RuntimeException.class);
+
+        //then
+        assertThrows(RuntimeException.class, () -> groupService.createNewGroup(dto));
     }
 }
