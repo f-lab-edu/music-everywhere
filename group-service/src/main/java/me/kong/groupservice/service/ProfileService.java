@@ -34,16 +34,10 @@ public class ProfileService {
         profileRepository.save(profile);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, noRollbackFor = NoLoggedInProfileException.class)
     public Profile getLoggedInProfile(Long groupId) {
-        return getOptionalLoggedInProfile(groupId).orElseThrow(NoLoggedInProfileException::new);
-    }
-
-    @Transactional(readOnly = true)
-    public Optional<Profile> getOptionalLoggedInProfile(Long groupId) {
         Long userId = jwtReader.getUserId();
 
-        return profileRepository.findByUserIdAndGroupId(userId, groupId);
+        return profileRepository.findByUserIdAndGroupId(userId, groupId).orElseThrow(NoLoggedInProfileException::new);
     }
-
 }

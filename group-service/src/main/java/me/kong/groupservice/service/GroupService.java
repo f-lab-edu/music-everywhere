@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.kong.groupservice.common.exception.DuplicateElementException;
 import me.kong.groupservice.common.exception.ForbiddenAccessException;
+import me.kong.groupservice.common.exception.NoLoggedInProfileException;
 import me.kong.groupservice.domain.entity.State;
 import me.kong.groupservice.domain.entity.group.JoinCondition;
 import me.kong.groupservice.domain.entity.profile.GroupRole;
@@ -18,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -48,10 +48,9 @@ public class GroupService {
             throw new DuplicateElementException("이미 가입 요청한 그룹입니다.");
         }
 
-        Optional<Profile> optionalProfile = profileService.getOptionalLoggedInProfile(groupId);
-        if (optionalProfile.isPresent()) {
+        try {
+            Profile profile = profileService.getLoggedInProfile(groupId);
 
-            Profile profile = optionalProfile.get();
             switch (profile.getState()) {
                 case RESTRICTED -> {
                     throw new ForbiddenAccessException("추방당한 회원입니다. userId : " + profile.getUserId());
@@ -62,17 +61,17 @@ public class GroupService {
                 case DELETED -> {
                     if (group.getJoinCondition() == JoinCondition.OPEN) {
                         profile.setState(State.GENERAL);
-                    } else {
-                        joinRequestService.createNewGroupJoinRequest(dto, group);
+                        return;
                     }
                 }
             }
+        } catch (NoLoggedInProfileException e) {
+            // 가입한 적 없는 그룹
+        }
+        if (group.getJoinCondition() == JoinCondition.OPEN) {
+            profileService.createNewProfile(dto.getNickname(), GroupRole.MEMBER, group);
         } else {
-            if (group.getJoinCondition() == JoinCondition.OPEN) {
-                profileService.createNewProfile(dto.getNickname(), GroupRole.MEMBER, group);
-            } else {
-                joinRequestService.createNewGroupJoinRequest(dto, group);
-            }
+            joinRequestService.createNewGroupJoinRequest(dto, group);
         }
     }
 
