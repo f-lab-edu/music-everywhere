@@ -17,7 +17,7 @@ tags:
   - name: users
     description: 회원가입, 사용자 조회 등 사용자의 동작과 인증을 담당합니다.
   - name: groups
-    description: 그룹 자체를 관리합니다. 그룹의 생성, 삭제와 그룹원 관리를 담당합니다.
+    description: 그룹 자체를 관리합니다. 그룹의 생성, 삭제, 가입, 관리를 담당합니다.
     
 
 
@@ -167,3 +167,124 @@ paths:
       responses:
         '200':
           description: 그룹 생성 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  name:
+                    type: string
+                    example: '테스트 그룹'
+                  description:
+                    type: string
+                    example: '테스트를 위한 그룹입니다'
+  
+  /groups/{groupId}:
+    post:
+      tags:
+        - groups
+      summary: 그룹 가입
+      description: 그룹에 가입합니다. 탈퇴했던 그룹이라면 프로필을 되살립니다.
+      parameters:
+        - in: path
+          name: groupId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nickname:
+                  type: string
+                  description: 그룹에서 사용할 프로필 이름
+                requestInfo:
+                  type: string
+                  description: 그룹 옵션이 수락 후 가입일 시 사용, 가입 요청에 대한 부가 정보 (사용자로부터 입력받음)
+      responses:
+        '200':
+          description: 그룹 가입 성공
+        '201':
+          description: 기존 프로필을 복구
+        '403':
+          description: 가입이 금지된 사용자
+        '404':
+          description: 존재하지 않는 그룹
+        '409':
+          description: 이미 가입한 사용자
+          
+  /requests:
+    get:
+      tags:
+        - groups
+      summary: 가입요청 목록 요청
+      description: 가입 대기중인 요청 중 처리되지 않은 요청들을 반환합니다.
+      parameters:
+        - in: query
+          name: groupId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 요청 목록 반환 성공
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: 요청 ID
+                    nickname:
+                      type: string
+                      description: 가입 요청 시 입력한 닉네임
+                    requestInfo:
+                      type: string
+                      description: 사용자가 입력한 부가 정보
+        '403':
+          description: 권한 부족
+        '404':
+          description: 존재하지 않는 그룹
+  
+  /requests/{requestId}:
+    patch:
+      tags:
+        - groups
+      summary: 가입 요청 처리
+      description: 요청에 대해 수락/거절 처리를 진행합니다
+      parameters:
+        - in: path
+          name: requestId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: 
+                  type: string
+                  description: 요청 처리에 기대하는 동작
+                  enum: 
+                    - APPROVED
+                    - REJECTED
+      responses:
+        '200':
+          description: 처리 성공
+        '403':
+          description: 권한 부족
+        '404':
+          description: 존재하지 않는 그룹 혹은 요청 정보
+        '409':
+          description: 이미 처리된 요청
+        
