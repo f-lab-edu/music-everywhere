@@ -1,4 +1,4 @@
-package me.kong.groupservice.service;
+package me.kong.groupservice.validation;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;

@@ -1,4 +1,4 @@
-package me.kong.groupservice.domain.entity.profile;
+package me.kong.groupservice.domain.entity.GroupJoinRequest;
 
 
 import jakarta.persistence.*;
@@ -7,25 +7,23 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.kong.groupservice.domain.entity.BaseTimeEntity;
-import me.kong.groupservice.domain.entity.State;
 import me.kong.groupservice.domain.entity.group.Group;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Profile extends BaseTimeEntity {
+public class GroupJoinRequest extends BaseTimeEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue
     private Long id;
+
+    private String requestInfo;
 
     private String nickname;
 
-    @Column(name = "group_role")
+    @Column(name = "response")
     @Enumerated(EnumType.STRING)
-    private GroupRole groupRole;
-
-    @Enumerated(EnumType.STRING)
-    private State state;
+    private JoinResponse response;
 
     @Column(name = "user_id")
     private Long userId;
@@ -35,15 +33,12 @@ public class Profile extends BaseTimeEntity {
     private Group group;
 
     @Builder
-    public Profile(String nickname, GroupRole groupRole, State state, Long userId, Group group) {
+    public GroupJoinRequest(Long id, String requestInfo, String nickname, JoinResponse response, Long userId, Group group) {
+        this.id = id;
+        this.requestInfo = requestInfo;
         this.nickname = nickname;
-        this.groupRole = groupRole;
-        this.state = state;
+        this.response = response;
         this.userId = userId;
         this.group = group;
-    }
-
-    public void setState(State state) {
-        this.state = state;
     }
 }
