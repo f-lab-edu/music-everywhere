@@ -6,8 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import me.kong.userservice.domain.BaseTimeEntity;
-
+import me.kong.commonlibrary.entity.BaseTimeEntity;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
