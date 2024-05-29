@@ -288,7 +288,7 @@ paths:
             schema:
               type: object
               properties:
-                email: 
+                action: 
                   type: string
                   description: 요청 처리에 기대하는 동작
                   enum: 
