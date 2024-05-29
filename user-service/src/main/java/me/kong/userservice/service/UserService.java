@@ -3,7 +3,7 @@ package me.kong.userservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.kong.userservice.common.exception.DuplicateElementException;
+import me.kong.commonlibrary.exception.common.DuplicateElementException;
 import me.kong.userservice.controller.dto.UserRegisterRequestDto;
 import me.kong.userservice.domain.entity.user.Role;
 import me.kong.userservice.domain.entity.user.User;
