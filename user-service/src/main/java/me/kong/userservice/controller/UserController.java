@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import static me.kong.commonlibrary.constant.HttpStatusResponseEntity.RESPONSE_OK;
 
-//import static me.kong.userservice.common.HttpStatusResponseEntity.RESPONSE_OK;
-
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
