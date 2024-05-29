@@ -292,8 +292,8 @@ paths:
                   type: string
                   description: 요청 처리에 기대하는 동작
                   enum: 
-                    - APPROVED
-                    - REJECTED
+                    - APPROVE
+                    - REJECT
       responses:
         '200':
           description: 처리 성공
