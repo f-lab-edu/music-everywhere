@@ -8,13 +8,12 @@ import me.kong.groupservice.domain.entity.profile.GroupRole;
 import me.kong.groupservice.domain.repository.GroupRepository;
 import me.kong.groupservice.domain.repository.ProfileRepository;
 import me.kong.groupservice.dto.request.SaveGroupRequestDto;
+import me.kong.groupservice.service.GroupJoinRequestService;
 import me.kong.groupservice.service.GroupService;
 import me.kong.groupservice.service.ProfileService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -28,6 +27,9 @@ public class GroupManagementServiceTest {
 
     @Autowired
     private GroupService groupService;
+
+    @Autowired
+    private GroupJoinRequestService joinRequestService;
 
     @MockBean
     private ProfileService profileService;
