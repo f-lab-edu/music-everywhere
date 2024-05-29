@@ -218,18 +218,29 @@ paths:
         '409':
           description: 이미 가입한 사용자
           
-  /requests:
+  /groups/{groupId}/requests:
     get:
       tags:
         - groups
       summary: 가입요청 목록 요청
-      description: 가입 대기중인 요청 중 처리되지 않은 요청들을 반환합니다.
+      description: 가입 요청 목록을 반환합니다. status 파라미터 미전달 시 대기중인 요청만 반환됩니다.
       parameters:
-        - in: query
+        - in: path
           name: groupId
           required: true
           schema:
             type: integer
+        - in: query
+          name: status
+          required: false
+          schema:
+            type: string
+            enum:
+              - PENDING
+              - PROCESSED
+              - ALL
+            default: PENDING
+            # description: 조회할 가입 요청의 상태 (PENDING: 대기중, PROCESSED: 처리됨, ALL: 모든 요청)
       responses:
         '200':
           description: 요청 목록 반환 성공
@@ -253,14 +264,19 @@ paths:
           description: 권한 부족
         '404':
           description: 존재하지 않는 그룹
-  
-  /requests/{requestId}:
+    
+  /groups/{groupId}/requests/{requestId}:
     patch:
       tags:
         - groups
       summary: 가입 요청 처리
       description: 요청에 대해 수락/거절 처리를 진행합니다
       parameters:
+        - in: path
+          name: groupId
+          required: true
+          schema:
+            type: integer
         - in: path
           name: requestId
           required: true
@@ -272,12 +288,12 @@ paths:
             schema:
               type: object
               properties:
-                email: 
+                action: 
                   type: string
                   description: 요청 처리에 기대하는 동작
                   enum: 
-                    - APPROVED
-                    - REJECTED
+                    - APPROVE
+                    - REJECT
       responses:
         '200':
           description: 처리 성공
@@ -287,4 +303,5 @@ paths:
           description: 존재하지 않는 그룹 혹은 요청 정보
         '409':
           description: 이미 처리된 요청
+          
         
