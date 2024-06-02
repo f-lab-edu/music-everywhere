@@ -41,4 +41,12 @@ public class GroupJoinRequest extends BaseTimeEntity {
         this.userId = userId;
         this.group = group;
     }
+
+    public void approveJoinRequest() {
+        response = JoinResponse.APPROVED;
+    }
+
+    public void rejectJoinRequest() {
+        response = JoinResponse.REJECTED;
+    }
 }

@@ -1,6 +1,7 @@
 package me.kong.groupservice.service;
 
 import lombok.RequiredArgsConstructor;
+import me.kong.commonlibrary.exception.auth.UnAuthorizedException;
 import me.kong.groupservice.common.JwtReader;
 import me.kong.groupservice.common.exception.NoLoggedInProfileException;
 import me.kong.groupservice.domain.entity.State;
@@ -11,7 +12,6 @@ import me.kong.groupservice.domain.repository.ProfileRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 
 
 @Service
@@ -39,5 +39,15 @@ public class ProfileService {
         Long userId = jwtReader.getUserId();
 
         return profileRepository.findByUserIdAndGroupId(userId, groupId).orElseThrow(NoLoggedInProfileException::new);
+    }
+
+    @Transactional(readOnly = true)
+    public void checkLoggedInProfileIsGroupManager(Long groupId) {
+        Profile profile = getLoggedInProfile(groupId);
+
+        if (profile.getGroupRole() != GroupRole.MANAGER) {
+            throw new UnAuthorizedException("권한이 없습니다. groupId : "
+                    + groupId + ", profileId : " + profile.getId() + " , userId : " + profile.getUserId());
+        }
     }
 }

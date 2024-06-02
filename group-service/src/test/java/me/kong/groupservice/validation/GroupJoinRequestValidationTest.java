@@ -4,9 +4,9 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
-import me.kong.groupservice.domain.entity.GroupJoinRequest.GroupJoinRequest;
+import me.kong.groupservice.dto.request.GroupJoinProcessDto;
 import me.kong.groupservice.dto.request.GroupJoinRequestDto;
-import me.kong.groupservice.dto.request.SaveGroupRequestDto;
+import me.kong.groupservice.dto.request.enums.GroupJoinProcessAction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,5 +50,29 @@ public class GroupJoinRequestValidationTest {
         ConstraintViolation<GroupJoinRequestDto> violation = violations.iterator().next();
         assertEquals("nickname", violation.getPropertyPath().toString());
         assertEquals("비어 있을 수 없습니다", violation.getMessage());
+    }
+
+    @Test
+    @DisplayName("가입 요청 처리의 action이 존재한다면 검증에 성공한다")
+    void successToProcessGroupJoinRequest() {
+        GroupJoinProcessDto dto = GroupJoinProcessDto.builder()
+                .action(GroupJoinProcessAction.APPROVE)
+                .build();
+
+        Set<ConstraintViolation<GroupJoinProcessDto>> violations = validator.validate(dto);
+        assertThat(violations).isEmpty();
+    }
+
+    @Test
+    @DisplayName("가입 요청 처리의 action이 비어있다면 검증에 실패한다")
+    void failedByEmptyAction() {
+        GroupJoinProcessDto dto = GroupJoinProcessDto.builder()
+                .action(null)
+                .build();
+
+        Set<ConstraintViolation<GroupJoinProcessDto>> violations = validator.validate(dto);
+        ConstraintViolation<GroupJoinProcessDto> violation = violations.iterator().next();
+        assertEquals("action", violation.getPropertyPath().toString());
+        assertEquals("널이어서는 안됩니다", violation.getMessage());
     }
 }

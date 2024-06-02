@@ -17,4 +17,18 @@ public interface GroupJoinRequestRepository extends JpaRepository<GroupJoinReque
     }
 
     Optional<GroupJoinRequest> findByResponseAndUserIdAndGroupId(JoinResponse response, Long userId, Long groupId);
+
+    List<GroupJoinRequest> findAllByGroupId(Long groupId);
+
+    default List<GroupJoinRequest> findPendingGroupJoinRequests(Long groupId) {
+        return findAllByGroupIdAndResponse(groupId, JoinResponse.PENDING);
+    }
+
+    default List<GroupJoinRequest> findProcessedGroupJoinRequests(Long groupId) {
+        return findAllByGroupIdAndResponseNot(groupId, JoinResponse.PENDING);
+    }
+
+    List<GroupJoinRequest> findAllByGroupIdAndResponse(Long groupId, JoinResponse response);
+
+    List<GroupJoinRequest> findAllByGroupIdAndResponseNot(Long groupId, JoinResponse response);
 }
