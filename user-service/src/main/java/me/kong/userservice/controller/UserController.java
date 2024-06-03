@@ -25,8 +25,8 @@ public class UserController {
         return RESPONSE_OK;
     }
 
-    @GetMapping("/{email}/exists")
-    public ResponseEntity<HttpStatus> checkUniqueEmail(@PathVariable String email) {
+    @GetMapping("/check-email")
+    public ResponseEntity<HttpStatus> checkUniqueEmail(@RequestParam(name = "email") String email) {
         userService.checkUniqueEmail(email);
         return RESPONSE_OK;
     }
