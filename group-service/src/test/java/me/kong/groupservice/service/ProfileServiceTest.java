@@ -1,8 +1,7 @@
 package me.kong.groupservice.service;
 
 import me.kong.commonlibrary.exception.auth.UnAuthorizedException;
-import me.kong.groupservice.common.JwtReader;
-import me.kong.groupservice.common.exception.NoLoggedInProfileException;
+import me.kong.commonlibrary.util.JwtReader;
 import me.kong.groupservice.domain.entity.group.Group;
 import me.kong.groupservice.domain.entity.profile.GroupRole;
 import me.kong.groupservice.domain.entity.profile.Profile;

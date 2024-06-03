@@ -6,7 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import me.kong.groupservice.domain.entity.BaseTimeEntity;
+import me.kong.commonlibrary.entity.BaseTimeEntity;
 import me.kong.groupservice.domain.entity.group.Group;
 
 @Getter

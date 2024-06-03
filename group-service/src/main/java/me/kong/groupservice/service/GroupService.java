@@ -3,8 +3,8 @@ package me.kong.groupservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.kong.groupservice.common.exception.DuplicateElementException;
-import me.kong.groupservice.common.exception.ForbiddenAccessException;
+import me.kong.commonlibrary.exception.auth.UnAuthorizedException;
+import me.kong.commonlibrary.exception.common.DuplicateElementException;
 import me.kong.groupservice.common.exception.NoLoggedInProfileException;
 import me.kong.groupservice.domain.entity.State;
 import me.kong.groupservice.domain.entity.group.JoinCondition;
@@ -53,7 +53,7 @@ public class GroupService {
 
             switch (profile.getState()) {
                 case RESTRICTED -> {
-                    throw new ForbiddenAccessException("추방당한 회원입니다. userId : " + profile.getUserId());
+                    throw new UnAuthorizedException("추방당한 회원입니다. userId : " + profile.getUserId());
                 }
                 case GENERAL -> {
                     throw new DuplicateElementException("이미 가입한 그룹입니다.");
