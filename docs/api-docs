@@ -59,14 +59,14 @@ paths:
                     type: string
                     example: '중복된 이메일입니다. email : test@email.com'
                     
-  /users/{email}/exists:
+  /users/check-email:
     get:
       tags:
         - users
       summary: 이메일 중복 검사
       description: 가입 전 이미 존재하는 이메일인지 확인합니다.
       parameters:
-        - in: path
+        - in: query
           name: email
           required: true
           schema:
