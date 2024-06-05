@@ -2,7 +2,7 @@ package me.kong.groupservice.service;
 
 import lombok.RequiredArgsConstructor;
 import me.kong.commonlibrary.exception.auth.UnAuthorizedException;
-import me.kong.groupservice.common.JwtReader;
+import me.kong.commonlibrary.util.JwtReader;
 import me.kong.groupservice.common.exception.NoLoggedInProfileException;
 import me.kong.groupservice.domain.entity.State;
 import me.kong.groupservice.domain.entity.profile.GroupRole;

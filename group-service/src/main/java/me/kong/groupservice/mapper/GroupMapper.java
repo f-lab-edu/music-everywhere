@@ -2,7 +2,7 @@ package me.kong.groupservice.mapper;
 
 
 import lombok.RequiredArgsConstructor;
-import me.kong.groupservice.common.JwtReader;
+import me.kong.commonlibrary.util.JwtReader;
 import me.kong.groupservice.domain.entity.State;
 import me.kong.groupservice.domain.entity.group.Group;
 import me.kong.groupservice.dto.request.SaveGroupRequestDto;

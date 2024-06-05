@@ -1,7 +1,7 @@
 package me.kong.groupservice.service;
 
-import me.kong.groupservice.common.exception.DuplicateElementException;
-import me.kong.groupservice.common.exception.ForbiddenAccessException;
+import me.kong.commonlibrary.exception.auth.UnAuthorizedException;
+import me.kong.commonlibrary.exception.common.DuplicateElementException;
 import me.kong.groupservice.common.exception.NoLoggedInProfileException;
 import me.kong.groupservice.domain.entity.State;
 import me.kong.groupservice.domain.entity.group.Group;
@@ -185,7 +185,7 @@ class GroupServiceTest {
         when(groupRepository.findById(any())).thenReturn(Optional.of(group));
 
         //then
-        assertThrows(ForbiddenAccessException.class, () -> groupService.joinGroup(joinRequestDto, any(Long.class)));
+        assertThrows(UnAuthorizedException.class, () -> groupService.joinGroup(joinRequestDto, any(Long.class)));
     }
 
 
