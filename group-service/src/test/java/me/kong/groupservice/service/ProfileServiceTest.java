@@ -2,7 +2,10 @@ package me.kong.groupservice.service;
 
 import me.kong.commonlibrary.exception.auth.UnAuthorizedException;
 import me.kong.commonlibrary.util.JwtReader;
+import me.kong.groupservice.common.exception.GroupFullException;
+import me.kong.groupservice.domain.entity.State;
 import me.kong.groupservice.domain.entity.group.Group;
+import me.kong.groupservice.domain.entity.group.GroupSizeConstants;
 import me.kong.groupservice.domain.entity.profile.GroupRole;
 import me.kong.groupservice.domain.entity.profile.Profile;
 import me.kong.groupservice.domain.repository.ProfileRepository;
@@ -82,5 +85,34 @@ class ProfileServiceTest {
 
         //then
         assertThrows(UnAuthorizedException.class, () -> profileService.checkLoggedInProfileIsGroupManager(groupId));
+    }
+
+    @Test
+    @DisplayName("그룹이 가득 차지 않았다면 예외가 발생하지 않는다")
+    void isNotFullGroup() {
+        //given
+        Long groupId = 1L;
+        when(profileRepository.countByGroupIdAndState(groupId, State.GENERAL)).thenReturn(GroupSizeConstants.BASIC-1);
+        when(group.getId()).thenReturn(groupId);
+        when(group.getGroupSize()).thenReturn(GroupSizeConstants.BASIC);
+
+        //when
+        profileService.checkGroupSize(group);
+
+        //then
+        verify(profileRepository, times(1)).countByGroupIdAndState(groupId, State.GENERAL);
+    }
+
+    @Test
+    @DisplayName("그룹이 가득 찼다면 예외가 발생한다")
+    void isFullGroupThrowsException() {
+        //given
+        Long groupId = 1L;
+        when(profileRepository.countByGroupIdAndState(groupId, State.GENERAL)).thenReturn(GroupSizeConstants.BASIC);
+        when(group.getId()).thenReturn(groupId);
+        when(group.getGroupSize()).thenReturn(GroupSizeConstants.BASIC);
+
+        //then
+        assertThrows(GroupFullException.class, () -> profileService.checkGroupSize(group));
     }
 }
