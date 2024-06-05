@@ -1,5 +1,5 @@
 package me.kong.groupservice.domain.entity.group;
 
-public interface GroupSizeConstants {
-    int BASIC = 10;
+public final class GroupSizeConstants {
+    public static final int BASIC = 10;
 }
