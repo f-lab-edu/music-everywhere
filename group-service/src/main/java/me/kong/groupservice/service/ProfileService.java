@@ -1,8 +1,10 @@
 package me.kong.groupservice.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import me.kong.commonlibrary.exception.auth.UnAuthorizedException;
 import me.kong.commonlibrary.util.JwtReader;
+import me.kong.groupservice.common.exception.GroupFullException;
 import me.kong.groupservice.common.exception.NoLoggedInProfileException;
 import me.kong.groupservice.domain.entity.State;
 import me.kong.groupservice.domain.entity.profile.GroupRole;
@@ -48,6 +50,13 @@ public class ProfileService {
         if (profile.getGroupRole() != GroupRole.MANAGER) {
             throw new UnAuthorizedException("권한이 없습니다. groupId : "
                     + groupId + ", profileId : " + profile.getId() + " , userId : " + profile.getUserId());
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public void checkGroupSize(Group group) {
+        if (profileRepository.countByGroupIdAndState(group.getId(), State.GENERAL) >= group.getGroupSize()) {
+            throw new GroupFullException("최대 인원인 그룹입니다. id : " + group.getId());
         }
     }
 }
