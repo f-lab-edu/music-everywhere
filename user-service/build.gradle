@@ -39,6 +39,7 @@ dependencies {
 	implementation 'me.kong:common-library:0.0.1-SNAPSHOT'
 
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+	runtimeOnly 'com.mysql:mysql-connector-j'
 }
 
 dependencyManagement {
