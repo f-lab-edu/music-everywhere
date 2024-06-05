@@ -1,0 +1,57 @@
+version: '3'
+services:
+  eureka-discovery:
+    build:
+      context: ./eureka-discovery
+      dockerfile: Dockerfile
+    container_name: eureka-discovery
+    ports:
+      - "8761:8761"
+    networks:
+      - eureka-network
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - EUREKA_SERVER_URI=http://eureka-discovery:8761/eureka/
+    depends_on:
+      - eureka-discovery
+    networks:
+      - eureka-network
+
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    container_name: user-service
+    ports:
+      - "8081:8081"
+    environment:
+      - EUREKA_SERVER_URI=http://eureka-discovery:8761/eureka/
+    depends_on:
+      - eureka-discovery
+    networks:
+      - eureka-network
+
+  group-service:
+    build:
+      context: ./group-service
+      dockerfile: Dockerfile
+    container_name: group-service
+    ports:
+      - "8082:8082"
+    environment:
+      - EUREKA_SERVER_URI=http://eureka-discovery:8761/eureka/
+    depends_on:
+      - eureka-discovery
+    networks:
+      - eureka-network
+
+networks:
+  eureka-network:
+    driver: bridge
