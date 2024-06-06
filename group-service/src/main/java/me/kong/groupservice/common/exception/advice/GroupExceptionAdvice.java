@@ -4,6 +4,7 @@ package me.kong.groupservice.common.exception.advice;
 import lombok.RequiredArgsConstructor;
 import me.kong.commonlibrary.exception.ErrorInfo;
 import me.kong.commonlibrary.exception.common.DuplicateElementException;
+import me.kong.groupservice.common.exception.GroupFullException;
 import me.kong.groupservice.common.exception.NoLoggedInProfileException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,11 @@ public class GroupExceptionAdvice {
     @ExceptionHandler(NoLoggedInProfileException.class)
     public ResponseEntity<ErrorInfo> NoLoggedInProfileException(NoLoggedInProfileException e) {
         return new ResponseEntity<>(new ErrorInfo(e.getClass().getSimpleName(), "가입하지 않은 그룹입니다."), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(GroupFullException.class)
+    public ResponseEntity<ErrorInfo> GroupFullException(GroupFullException e) {
+        return new ResponseEntity<>(new ErrorInfo(e), HttpStatus.BAD_REQUEST);
     }
 
 }

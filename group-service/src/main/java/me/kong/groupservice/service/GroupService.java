@@ -60,18 +60,20 @@ public class GroupService {
                 }
                 case DELETED -> {
                     if (group.getJoinCondition() == JoinCondition.OPEN) {
+                        profileService.checkGroupSize(group);
                         profile.setState(State.GENERAL);
-                        return;
+                    } else {
+                        joinRequestService.createNewGroupJoinRequest(dto, group);
                     }
                 }
             }
         } catch (NoLoggedInProfileException e) {
-            // 가입한 적 없는 그룹
-        }
-        if (group.getJoinCondition() == JoinCondition.OPEN) {
-            profileService.createNewProfile(dto.getNickname(), GroupRole.MEMBER, group);
-        } else {
-            joinRequestService.createNewGroupJoinRequest(dto, group);
+            if (group.getJoinCondition() == JoinCondition.OPEN) {
+                profileService.checkGroupSize(group);
+                profileService.createNewProfile(dto.getNickname(), GroupRole.MEMBER, group);
+            } else {
+                joinRequestService.createNewGroupJoinRequest(dto, group);
+            }
         }
     }
 

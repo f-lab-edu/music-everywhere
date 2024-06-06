@@ -14,7 +14,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Entity(name = "groups")
+@Entity(name = "music_group")
 public class Group extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,6 +22,9 @@ public class Group extends BaseTimeEntity {
     private String name;
 
     private String description;
+
+    @Column(name = "group_size")
+    private Integer groupSize;
 
     @Column(name = "join_condition")
     @Enumerated(EnumType.STRING)
@@ -37,14 +40,11 @@ public class Group extends BaseTimeEntity {
     @Column(name = "owner_user_id")
     private Long ownerUserId;
 
-
-    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
-    private List<Profile> profiles;
-
     @Builder
-    public Group(String name, String description, JoinCondition joinCondition, GroupScope groupScope, State state, Long ownerUserId) {
+    public Group(String name, String description, Integer groupSize, JoinCondition joinCondition, GroupScope groupScope, State state, Long ownerUserId) {
         this.name = name;
         this.description = description;
+        this.groupSize = groupSize;
         this.joinCondition = joinCondition;
         this.groupScope = groupScope;
         this.state = state;

@@ -25,7 +25,6 @@ public class GroupJoinRequestService {
     private final JwtReader jwtReader;
     private final GroupJoinRequestRepository joinRequestRepository;
     private final GroupJoinRequestMapper joinRequestMapper;
-    private final GroupJoinRequestRepository groupJoinRequestRepository;
     private final ProfileService profileService;
 
     @Transactional(readOnly = true)
@@ -52,13 +51,13 @@ public class GroupJoinRequestService {
 
         switch (condition) {
             case PENDING -> {
-                requests = groupJoinRequestRepository.findPendingGroupJoinRequests(groupId);
+                requests = joinRequestRepository.findPendingGroupJoinRequests(groupId);
             }
             case PROCESSED -> {
-                requests = groupJoinRequestRepository.findProcessedGroupJoinRequests(groupId);
+                requests = joinRequestRepository.findProcessedGroupJoinRequests(groupId);
             }
             case ALL -> {
-                requests = groupJoinRequestRepository.findAllByGroupId(groupId);
+                requests = joinRequestRepository.findAllByGroupId(groupId);
             }
             default -> {
                 throw new IllegalArgumentException("지원하지 않는 그룹 가입 검색 조건. status : " + condition);
@@ -80,6 +79,7 @@ public class GroupJoinRequestService {
         switch (dto.getAction()) {
             case APPROVE -> {
                 joinRequest.approveJoinRequest();
+                profileService.checkGroupSize(joinRequest.getGroup());
                 profileService.createNewProfile(joinRequest.getNickname(), GroupRole.MEMBER, joinRequest.getGroup());
             }
             case REJECT -> {
