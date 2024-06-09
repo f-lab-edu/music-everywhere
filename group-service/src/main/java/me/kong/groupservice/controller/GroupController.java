@@ -13,6 +13,7 @@ import me.kong.groupservice.dto.response.GroupJoinResponseDto;
 import me.kong.groupservice.dto.response.GroupResponseDto;
 import me.kong.groupservice.mapper.GroupJoinRequestMapper;
 import me.kong.groupservice.mapper.GroupMapper;
+import me.kong.groupservice.service.GroupJoinFacade;
 import me.kong.groupservice.service.GroupJoinRequestService;
 import me.kong.groupservice.service.GroupService;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,7 @@ public class GroupController {
     private final GroupJoinRequestService joinRequestService;
     private final GroupMapper groupMapper;
     private final GroupJoinRequestMapper requestMapper;
+    private final GroupJoinFacade groupJoinFacade;
 
     @PostMapping
     public ResponseEntity<GroupResponseDto> addGroup(@RequestBody @Valid SaveGroupRequestDto dto) {
@@ -43,7 +45,7 @@ public class GroupController {
 
     @PostMapping("{groupId}")
     public ResponseEntity<HttpStatus> joinGroup(@PathVariable Long groupId, @RequestBody @Valid GroupJoinRequestDto dto) {
-        groupService.joinGroup(dto, groupId);
+        groupJoinFacade.joinGroup(dto, groupId);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -61,7 +63,7 @@ public class GroupController {
     public ResponseEntity<HttpStatus> handleGroupJoinRequest(@PathVariable Long groupId,
                                                              @PathVariable Long requestId,
                                                              @RequestBody GroupJoinProcessDto processDto) {
-        joinRequestService.processGroupJoinRequest(requestId, processDto);
+        groupJoinFacade.processGroupJoinRequest(requestId, processDto);
 
         return RESPONSE_OK;
     }

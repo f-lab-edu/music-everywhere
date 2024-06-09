@@ -1,14 +1,10 @@
 package me.kong.groupservice.service;
 
 import lombok.RequiredArgsConstructor;
-import me.kong.commonlibrary.exception.common.DuplicateElementException;
 import me.kong.commonlibrary.util.JwtReader;
 import me.kong.groupservice.domain.entity.GroupJoinRequest.GroupJoinRequest;
-import me.kong.groupservice.domain.entity.GroupJoinRequest.JoinResponse;
 import me.kong.groupservice.domain.entity.group.Group;
-import me.kong.groupservice.domain.entity.profile.GroupRole;
 import me.kong.groupservice.domain.repository.GroupJoinRequestRepository;
-import me.kong.groupservice.dto.request.GroupJoinProcessDto;
 import me.kong.groupservice.dto.request.GroupJoinRequestDto;
 import me.kong.groupservice.dto.request.enums.JoinRequestSearchCondition;
 import me.kong.groupservice.mapper.GroupJoinRequestMapper;
@@ -64,30 +60,5 @@ public class GroupJoinRequestService {
             }
         }
         return requests;
-    }
-
-    @Transactional
-    public void processGroupJoinRequest(Long requestId, GroupJoinProcessDto dto) {
-        GroupJoinRequest joinRequest = getGroupJoinRequestByRequestId(requestId);
-
-        if (joinRequest.getResponse() != JoinResponse.PENDING) {
-            throw new DuplicateElementException("이미 처리된 가입 요청입니다. 요청 id : " + requestId);
-        }
-
-        profileService.checkLoggedInProfileIsGroupManager(joinRequest.getGroup().getId());
-
-        switch (dto.getAction()) {
-            case APPROVE -> {
-                joinRequest.approveJoinRequest();
-                profileService.checkGroupSize(joinRequest.getGroup());
-                profileService.createNewProfile(joinRequest.getNickname(), GroupRole.MEMBER, joinRequest.getGroup());
-            }
-            case REJECT -> {
-                joinRequest.rejectJoinRequest();
-            }
-            default -> {
-                throw new IllegalArgumentException("지원하지 않는 처리 요청. action : " + dto.getAction());
-            }
-        }
     }
 }
