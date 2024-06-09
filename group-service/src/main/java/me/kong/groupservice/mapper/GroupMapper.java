@@ -25,6 +25,7 @@ public class GroupMapper {
                 .groupScope(dto.getGroupScope())
                 .state(State.GENERAL)
                 .ownerUserId(jwtReader.getUserId())
+                .profileCount(1)
                 .build();
     }
 

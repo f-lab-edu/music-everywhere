@@ -7,10 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.kong.commonlibrary.entity.BaseTimeEntity;
-import me.kong.groupservice.domain.entity.profile.Profile;
 import me.kong.groupservice.domain.entity.State;
-
-import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -40,8 +37,11 @@ public class Group extends BaseTimeEntity {
     @Column(name = "owner_user_id")
     private Long ownerUserId;
 
+    @Column(name = "profile_count")
+    private Integer profileCount;
+
     @Builder
-    public Group(String name, String description, Integer groupSize, JoinCondition joinCondition, GroupScope groupScope, State state, Long ownerUserId) {
+    public Group(String name, String description, Integer groupSize, JoinCondition joinCondition, GroupScope groupScope, State state, Long ownerUserId, Integer profileCount) {
         this.name = name;
         this.description = description;
         this.groupSize = groupSize;
@@ -49,6 +49,15 @@ public class Group extends BaseTimeEntity {
         this.groupScope = groupScope;
         this.state = state;
         this.ownerUserId = ownerUserId;
+        this.profileCount = profileCount;
+    }
+
+    public void increaseProfileCount() {
+        this.profileCount++;
+    }
+
+    public void decreaseProfileCount() {
+        this.profileCount--;
     }
 
 }
