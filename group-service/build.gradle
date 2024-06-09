@@ -37,7 +37,7 @@ dependencies {
     runtimeOnly 'com.mysql:mysql-connector-j'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-    implementation 'me.kong:common-library:0.0.1-SNAPSHOT'
+    implementation 'me.kong:common-library:0.0.2-SNAPSHOT'
 }
 
 dependencyManagement {
