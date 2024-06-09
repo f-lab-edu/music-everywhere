@@ -14,7 +14,7 @@ import me.kong.groupservice.domain.entity.group.Group;
 @Entity
 public class GroupJoinRequest extends BaseTimeEntity {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String requestInfo;
