@@ -5,7 +5,7 @@ import me.kong.commonlibrary.util.JwtReader;
 import me.kong.groupservice.common.exception.GroupFullException;
 import me.kong.groupservice.domain.entity.State;
 import me.kong.groupservice.domain.entity.group.Group;
-import me.kong.groupservice.domain.entity.group.GroupSizeConstants;
+import me.kong.groupservice.common.Constants;
 import me.kong.groupservice.domain.entity.profile.GroupRole;
 import me.kong.groupservice.domain.entity.profile.Profile;
 import me.kong.groupservice.domain.repository.ProfileRepository;
@@ -38,10 +38,12 @@ class ProfileServiceTest {
     String nickname;
     GroupRole groupRole;
     Group group;
+    Long userId;
 
     @BeforeEach
     void init() {
         nickname = "testUser";
+        userId = 1L;
         groupRole = GroupRole.MANAGER;
         group = mock(Group.class);
     }
@@ -51,13 +53,11 @@ class ProfileServiceTest {
     @DisplayName("프로필 생성에 성공한다")
     void successToCreateNewProfile() {
         // Given
-        when(jwtReader.getUserId()).thenReturn(1L);
 
         //when
-        profileService.createNewProfile(nickname, groupRole, group);
+        profileService.createNewProfile(nickname, userId, groupRole, group);
 
         //then
-        verify(jwtReader, times(1)).getUserId();
         verify(profileRepository, times(1)).save(any(Profile.class));
     }
 
@@ -68,14 +68,13 @@ class ProfileServiceTest {
         when(profileRepository.save(any())).thenThrow(RuntimeException.class);
 
         //then
-        assertThrows(RuntimeException.class, () -> profileService.createNewProfile(nickname, groupRole, group));
+        assertThrows(RuntimeException.class, () -> profileService.createNewProfile(nickname, userId, groupRole, group));
     }
 
     @Test
     @DisplayName("그룹 매니저가 아닐 경우 예외가 발생한다")
     void unAuthorizeOccurred() {
         //given
-        Long userId = 1L;
         Long groupId = 1L;
         Profile profile = Profile.builder()
                 .groupRole(GroupRole.MEMBER)
@@ -92,9 +91,9 @@ class ProfileServiceTest {
     void isNotFullGroup() {
         //given
         Long groupId = 1L;
-        when(profileRepository.countByGroupIdAndState(groupId, State.GENERAL)).thenReturn(GroupSizeConstants.BASIC-1);
+        when(profileRepository.countByGroupIdAndState(groupId, State.GENERAL)).thenReturn(Constants.BASIC-1);
         when(group.getId()).thenReturn(groupId);
-        when(group.getGroupSize()).thenReturn(GroupSizeConstants.BASIC);
+        when(group.getGroupSize()).thenReturn(Constants.BASIC);
 
         //when
         profileService.checkGroupSize(group);
@@ -108,9 +107,9 @@ class ProfileServiceTest {
     void isFullGroupThrowsException() {
         //given
         Long groupId = 1L;
-        when(profileRepository.countByGroupIdAndState(groupId, State.GENERAL)).thenReturn(GroupSizeConstants.BASIC);
+        when(profileRepository.countByGroupIdAndState(groupId, State.GENERAL)).thenReturn(Constants.BASIC);
         when(group.getId()).thenReturn(groupId);
-        when(group.getGroupSize()).thenReturn(GroupSizeConstants.BASIC);
+        when(group.getGroupSize()).thenReturn(Constants.BASIC);
 
         //then
         assertThrows(GroupFullException.class, () -> profileService.checkGroupSize(group));
