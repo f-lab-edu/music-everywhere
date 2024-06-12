@@ -1,7 +1,6 @@
 package me.kong.groupservice.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import me.kong.commonlibrary.exception.auth.UnAuthorizedException;
 import me.kong.commonlibrary.util.JwtReader;
 import me.kong.groupservice.common.exception.GroupFullException;
@@ -24,12 +23,12 @@ public class ProfileService {
     private final JwtReader jwtReader;
 
     @Transactional
-    public void createNewProfile(String nickname, GroupRole groupRole, Group group) {
+    public void createNewProfile(String nickname, Long userId, GroupRole groupRole, Group group) {
         Profile profile = Profile.builder()
                 .nickname(nickname)
                 .groupRole(groupRole)
                 .state(State.GENERAL)
-                .userId(jwtReader.getUserId()) // token에서 현재 로그인한 user의 id를 가져온다.
+                .userId(userId)
                 .group(group)
                 .build();
 

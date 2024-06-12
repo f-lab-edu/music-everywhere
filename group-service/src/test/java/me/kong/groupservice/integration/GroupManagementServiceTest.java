@@ -8,7 +8,6 @@ import me.kong.groupservice.domain.entity.profile.GroupRole;
 import me.kong.groupservice.domain.repository.GroupRepository;
 import me.kong.groupservice.domain.repository.ProfileRepository;
 import me.kong.groupservice.dto.request.SaveGroupRequestDto;
-import me.kong.groupservice.service.GroupJoinRequestService;
 import me.kong.groupservice.service.GroupService;
 import me.kong.groupservice.service.ProfileService;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,9 +26,6 @@ public class GroupManagementServiceTest {
 
     @Autowired
     private GroupService groupService;
-
-    @Autowired
-    private GroupJoinRequestService joinRequestService;
 
     @MockBean
     private ProfileService profileService;
@@ -60,7 +56,7 @@ public class GroupManagementServiceTest {
                 .build();
 
         doThrow(new RuntimeException())
-                .when(profileService).createNewProfile(anyString(), any(GroupRole.class), any(Group.class));
+                .when(profileService).createNewProfile(anyString(), any(Long.class), any(GroupRole.class), any(Group.class));
 
         //when
         try {

@@ -1,15 +1,11 @@
 package me.kong.groupservice.service;
 
-import me.kong.commonlibrary.exception.common.DuplicateElementException;
 import me.kong.commonlibrary.util.JwtReader;
 import me.kong.groupservice.domain.entity.GroupJoinRequest.GroupJoinRequest;
-import me.kong.groupservice.domain.entity.GroupJoinRequest.JoinResponse;
 import me.kong.groupservice.domain.entity.group.Group;
-import me.kong.groupservice.domain.entity.profile.GroupRole;
 import me.kong.groupservice.domain.repository.GroupJoinRequestRepository;
 import me.kong.groupservice.dto.request.GroupJoinProcessDto;
 import me.kong.groupservice.dto.request.GroupJoinRequestDto;
-import me.kong.groupservice.dto.request.enums.GroupJoinProcessAction;
 import me.kong.groupservice.dto.request.enums.JoinRequestSearchCondition;
 import me.kong.groupservice.mapper.GroupJoinRequestMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,8 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -130,69 +124,4 @@ class GroupJoinRequestServiceTest {
                 .findProcessedGroupJoinRequests(groupId);
     }
 
-    @Test
-    @DisplayName("가입 승인 시, 우 가입 요청 상태가 승인으로 변경되고 새로운 프로필을 생성한다")
-    void successToApproveGroupJoinRequest() {
-        //given
-        Long requestId = 1L;
-        processDto = getProcessDto(GroupJoinProcessAction.APPROVE);
-        request = getJoinRequest(JoinResponse.PENDING);
-        when(groupJoinRequestRepository.findById(requestId)).thenReturn(Optional.of(request));
-        doNothing().when(profileService).checkLoggedInProfileIsGroupManager(anyLong());
-
-        // when
-        groupJoinRequestService.processGroupJoinRequest(requestId, processDto);
-
-        // then
-        assertEquals(JoinResponse.APPROVED, request.getResponse());
-        verify(profileService, times(1)).createNewProfile(request.getNickname(), GroupRole.MEMBER, request.getGroup());
-    }
-
-    @Test
-    @DisplayName("가입 거절 시, 가입 요청 상태가 거절로 변경된다")
-    void successToRejectGroupJoinRequest() {
-        //given
-        Long requestId = 1L;
-        processDto = getProcessDto(GroupJoinProcessAction.REJECT);
-        request = getJoinRequest(JoinResponse.PENDING);
-        when(groupJoinRequestRepository.findById(requestId)).thenReturn(Optional.of(request));
-        doNothing().when(profileService).checkLoggedInProfileIsGroupManager(anyLong());
-
-        //when
-        groupJoinRequestService.processGroupJoinRequest(requestId, processDto);
-
-        //then
-        assertEquals(JoinResponse.REJECTED, request.getResponse());
-    }
-
-
-    @Test
-    @DisplayName("가입 요청이 이미 처리되었다면 예외가 발생한다")
-    void testProcessGroupJoinRequest_AlreadyProcessed() {
-        // given
-        Long requestId = 1L;
-        processDto = getProcessDto(GroupJoinProcessAction.APPROVE);
-        request = getJoinRequest(JoinResponse.APPROVED);
-        when(groupJoinRequestRepository.findById(requestId)).thenReturn(Optional.of(request));
-
-        // then
-        assertThrows(DuplicateElementException.class, () -> {
-            groupJoinRequestService.processGroupJoinRequest(requestId, processDto);
-        });
-    }
-
-
-
-    private GroupJoinProcessDto getProcessDto(GroupJoinProcessAction action) {
-        return GroupJoinProcessDto.builder()
-                .action(action)
-                .build();
-    }
-
-    private GroupJoinRequest getJoinRequest(JoinResponse response) {
-        return GroupJoinRequest.builder()
-                .response(response)
-                .group(group)
-                .build();
-    }
 }

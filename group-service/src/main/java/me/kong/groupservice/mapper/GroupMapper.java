@@ -3,9 +3,9 @@ package me.kong.groupservice.mapper;
 
 import lombok.RequiredArgsConstructor;
 import me.kong.commonlibrary.util.JwtReader;
+import me.kong.groupservice.common.Constants;
 import me.kong.groupservice.domain.entity.State;
 import me.kong.groupservice.domain.entity.group.Group;
-import me.kong.groupservice.domain.entity.group.GroupSizeConstants;
 import me.kong.groupservice.dto.request.SaveGroupRequestDto;
 import me.kong.groupservice.dto.response.GroupResponseDto;
 import org.springframework.stereotype.Component;
@@ -20,11 +20,12 @@ public class GroupMapper {
         return Group.builder()
                 .name(dto.getGroupName())
                 .description(dto.getDescription())
-                .groupSize(GroupSizeConstants.BASIC)
+                .groupSize(Constants.BASIC)
                 .joinCondition(dto.getJoinCondition())
                 .groupScope(dto.getGroupScope())
                 .state(State.GENERAL)
                 .ownerUserId(jwtReader.getUserId())
+                .profileCount(1)
                 .build();
     }
 
