@@ -71,7 +71,7 @@ public class Consumers {
         joinRequestConsumerMap = new EnumMap<>(GroupJoinProcessAction.class);
 
         joinRequestConsumerMap.put(GroupJoinProcessAction.APPROVE, joinRequest -> {
-            Group group = joinRequest.getGroup();
+            Group group = groupService.findGroupByIdWithLock(joinRequest.getGroup().getId());
             groupService.checkGroupSize(group);
             group.increaseProfileCount();
 

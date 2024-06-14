@@ -58,7 +58,7 @@ public class GroupJoinFacade {
 
     @Transactional
     public void joinGroup(GroupJoinRequestDto dto, Long groupId) {
-        Group group = groupService.findGroupById(groupId);
+        Group group = groupService.findGroupByIdWithLock(groupId);
         if (joinRequestService.pendingRequestExists(group.getId())) {
             throw new DuplicateElementException("이미 가입 요청한 그룹입니다.");
         }
@@ -74,6 +74,12 @@ public class GroupJoinFacade {
             }
         } catch (NoLoggedInProfileException e) {
             firstJoinProcess(dto, group);
+        }
+
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            // 동시성 이슈 발생용
         }
     }
 

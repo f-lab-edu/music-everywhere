@@ -41,9 +41,20 @@ public class GroupService {
     }
 
     @Transactional(readOnly = true)
+    public Group findGroupByIdWithLock(Long id) {
+        return groupRepository.findByIdWithLock(id)
+                .orElseThrow(() -> new NoSuchElementException("찾으려는 그룹이 없습니다. id : " + id));
+    }
+
+    @Transactional(readOnly = true)
     public void checkGroupSize(Group group) {
         if (group.getProfileCount() >= group.getGroupSize()) {
             throw new GroupFullException("최대 인원인 그룹입니다. id : " + group.getId());
         }
+
+//        Group groupWithLock = groupRepository.findByIdWithLock(group.getId());
+//        if (groupWithLock.getProfileCount() >= groupWithLock.getGroupSize()) {
+//            throw new GroupFullException("최대 인원인 그룹입니다. id : " + group.getId());
+//        }
     }
 }
