@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.kong.commonlibrary.exception.common.DuplicateElementException;
 import me.kong.commonlibrary.util.JwtReader;
+import me.kong.groupservice.common.annotation.UserNameLock;
 import me.kong.groupservice.common.exception.NoLoggedInProfileException;
 import me.kong.groupservice.domain.entity.GroupJoinRequest.GroupJoinRequest;
 import me.kong.groupservice.domain.entity.GroupJoinRequest.JoinResponse;
@@ -36,8 +37,8 @@ public class GroupJoinFacade {
     private final JwtReader jwtReader;
 
 
-    @Transactional
-    public void processGroupJoinRequest(Long requestId, GroupJoinProcessDto dto) {
+    @UserNameLock(key = "'group:'.concat(#groupId)")
+    public void processGroupJoinRequest(Long groupId, Long requestId, GroupJoinProcessDto dto) {
         GroupJoinRequest joinRequest = joinRequestService.getGroupJoinRequestByRequestId(requestId);
 
         if (joinRequest.getResponse() != JoinResponse.PENDING) {
@@ -56,7 +57,7 @@ public class GroupJoinFacade {
     }
 
 
-    @Transactional
+    @UserNameLock(key = "'group:'.concat(#groupId)")
     public void joinGroup(GroupJoinRequestDto dto, Long groupId) {
         Group group = groupService.findGroupById(groupId);
         if (joinRequestService.pendingRequestExists(group.getId())) {
@@ -74,6 +75,11 @@ public class GroupJoinFacade {
             }
         } catch (NoLoggedInProfileException e) {
             firstJoinProcess(dto, group);
+        }
+        try {
+            Thread.sleep(3500);
+        } catch (InterruptedException e) {
+            // 동시성
         }
     }
 
