@@ -18,6 +18,8 @@ tags:
     description: 회원가입, 사용자 조회 등 사용자의 동작과 인증을 담당합니다.
   - name: groups
     description: 그룹 자체를 관리합니다. 그룹의 생성, 삭제, 가입, 관리를 담당합니다.
+  - name: posts
+    description: 게시글과 관련된 동작을 담당합니다.
     
 
 
@@ -304,4 +306,90 @@ paths:
         '409':
           description: 이미 처리된 요청
           
+  
+  /posts:
+    post:
+      tags:
+        - posts
+      summary: 게시글 생성
+      description: 새로운 게시글을 생성합니다.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: '게시글 제목'
+                content:
+                  type: string
+                  description: '게시글 내용'
+                scope:
+                  type: string
+                  enum:
+                    - PUBLIC
+                    - GROUP_ONLY
+      responses:
+        '200':
+          description: 게시글 작성 성공
+        '403':
+          description: 권한 부족(가입하지 않은 그룹 등)
         
+  /posts/{postId}:
+    parameters:
+      - in: path
+        name: postId
+        required: true
+        schema:
+          type: integer
+    get:
+      tags: 
+        - posts
+      summary: 단일 게시글 조회
+      description: 게시글 ID를 통해 게시글을 조회합니다.
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  title:
+                    type: string
+                    example: '게시글 제목'
+                  content:
+                    type: string
+                    example: '게시글 내용'
+                  group_id:
+                    type: integer
+                    example: 1
+                  profile_id:
+                    type: integer
+                    description: '작성자 프로필 ID'
+                    example: 1
+                  nickname:
+                    type: string
+                    example: '작성자 닉네임'
+                  updated_date:
+                    type: string
+                    format: date-time
+                    example: 2024-06-18T12:34:56
+    
+    delete:
+      tags:
+        - posts
+      summary: 게시글 삭제
+      description: 특정 ID의 게시글을 삭제합니다.
+      responses:
+        '200':
+          description: 삭제 성공
+        '403':
+          description: 권한 부족
+        '404':
+          description: 존재하지 않는 게시글
+  
