@@ -307,12 +307,18 @@ paths:
           description: 이미 처리된 요청
           
   
-  /posts:
+  /groups/{groupId}/posts:
     post:
       tags:
         - posts
       summary: 게시글 생성
       description: 새로운 게시글을 생성합니다.
+      parameters:
+        - in: path
+          name: groupId
+          required: true
+          schema:
+            type: integer
       requestBody:
         content:
           application/json:
@@ -336,8 +342,13 @@ paths:
         '403':
           description: 권한 부족(가입하지 않은 그룹 등)
         
-  /posts/{postId}:
+  /groups/{groupId}/posts/{postId}:
     parameters:
+      - in: path
+        name: groupId
+        required: true
+        schema:
+          type: integer
       - in: path
         name: postId
         required: true
