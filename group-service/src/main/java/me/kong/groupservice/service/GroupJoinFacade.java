@@ -75,11 +75,6 @@ public class GroupJoinFacade {
         } catch (NoLoggedInProfileException e) {
             firstJoinProcess(dto, group);
         }
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            // 동시성
-        }
     }
 
     private void firstJoinProcess(GroupJoinRequestDto dto, Group group) {
