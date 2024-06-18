@@ -63,7 +63,7 @@ public class GroupController {
     public ResponseEntity<HttpStatus> handleGroupJoinRequest(@PathVariable Long groupId,
                                                              @PathVariable Long requestId,
                                                              @RequestBody GroupJoinProcessDto processDto) {
-        groupJoinFacade.processGroupJoinRequest(requestId, processDto);
+        groupJoinFacade.processGroupJoinRequest(groupId, requestId, processDto);
 
         return RESPONSE_OK;
     }

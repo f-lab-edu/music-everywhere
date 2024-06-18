@@ -221,7 +221,7 @@ class GroupJoinFacadeTest {
 
         // then
         assertThrows(DuplicateElementException.class,
-                () -> groupJoinFacade.processGroupJoinRequest(requestId, joinProcessDto));
+                () -> groupJoinFacade.processGroupJoinRequest(groupId, requestId, joinProcessDto));
     }
 
     @Test
@@ -231,7 +231,7 @@ class GroupJoinFacadeTest {
         processJoinRequestConsumerSetting(GroupJoinProcessAction.APPROVE);
 
         // when
-        groupJoinFacade.processGroupJoinRequest(requestId, joinProcessDto);
+        groupJoinFacade.processGroupJoinRequest(groupId, requestId, joinProcessDto);
 
         // then
         assertEquals(joinRequest.getResponse(), JoinResponse.APPROVED);
@@ -245,7 +245,7 @@ class GroupJoinFacadeTest {
         processJoinRequestConsumerSetting(GroupJoinProcessAction.REJECT);
 
         //when
-        groupJoinFacade.processGroupJoinRequest(requestId, joinProcessDto);
+        groupJoinFacade.processGroupJoinRequest(groupId, requestId, joinProcessDto);
 
         //then
         assertEquals(joinRequest.getResponse(), JoinResponse.REJECTED);

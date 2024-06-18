@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.kong.commonlibrary.exception.common.DuplicateElementException;
 import me.kong.commonlibrary.util.JwtReader;
+import me.kong.groupservice.common.annotation.RedisLock;
 import me.kong.groupservice.common.exception.NoLoggedInProfileException;
 import me.kong.groupservice.domain.entity.GroupJoinRequest.GroupJoinRequest;
 import me.kong.groupservice.domain.entity.GroupJoinRequest.JoinResponse;
@@ -36,8 +37,8 @@ public class GroupJoinFacade {
     private final JwtReader jwtReader;
 
 
-    @Transactional
-    public void processGroupJoinRequest(Long requestId, GroupJoinProcessDto dto) {
+    @RedisLock(key = "'group:'.concat(#groupId)")
+    public void processGroupJoinRequest(Long groupId, Long requestId, GroupJoinProcessDto dto) {
         GroupJoinRequest joinRequest = joinRequestService.getGroupJoinRequestByRequestId(requestId);
 
         if (joinRequest.getResponse() != JoinResponse.PENDING) {
@@ -46,17 +47,16 @@ public class GroupJoinFacade {
 
         profileService.checkLoggedInProfileIsGroupManager(joinRequest.getGroup().getId());
 
-        Consumer<GroupJoinRequest> joinRequestConsumer = consumers.getJoinRequestConsumer(dto.getAction());
-        if (joinRequestConsumer != null) {
-            joinRequestConsumer.accept(joinRequest);
+        Consumer<GroupJoinRequest> action = consumers.getJoinRequestConsumer(dto.getAction());
+        if (action != null) {
+            action.accept(joinRequest);
         } else {
             log.warn(NoStateExceptionMessage, "가입 요청 처리", dto.getAction());
             throw new IllegalStateException("No action found for state: " + dto.getAction());
         }
     }
 
-
-    @Transactional
+    @RedisLock(key = "'group:'.concat(#groupId)")
     public void joinGroup(GroupJoinRequestDto dto, Long groupId) {
         Group group = groupService.findGroupById(groupId);
         if (joinRequestService.pendingRequestExists(group.getId())) {
