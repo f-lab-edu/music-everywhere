@@ -23,13 +23,12 @@ public class GroupService {
     private final GroupRepository groupRepository;
     private final ProfileService profileService;
     private final GroupMapper groupMapper;
-    private final JwtReader jwtReader;
 
     @Transactional
-    public Group createNewGroup(SaveGroupRequestDto dto) {
+    public Group createNewGroup(SaveGroupRequestDto dto, Long userId) {
         Group group = groupRepository.save(groupMapper.toEntity(dto));
 
-        profileService.createNewProfile(dto.getNickname(), jwtReader.getUserId(), GroupRole.MANAGER, group);
+        profileService.createNewProfile(dto.getNickname(), userId, GroupRole.MANAGER, group);
 
         return group;
     }
