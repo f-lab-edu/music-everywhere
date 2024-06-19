@@ -32,18 +32,14 @@ class ProfileServiceTest {
     @Mock
     ProfileRepository profileRepository;
 
-    @Mock
-    JwtReader jwtReader;
-
     String nickname;
     GroupRole groupRole;
     Group group;
-    Long userId;
+    Long userId = 1L;
 
     @BeforeEach
     void init() {
         nickname = "testUser";
-        userId = 1L;
         groupRole = GroupRole.MANAGER;
         group = mock(Group.class);
     }
@@ -79,11 +75,10 @@ class ProfileServiceTest {
         Profile profile = Profile.builder()
                 .groupRole(GroupRole.MEMBER)
                 .build();
-        when(jwtReader.getUserId()).thenReturn(userId);
         when(profileRepository.findByUserIdAndGroupId(userId, groupId)).thenReturn(Optional.of(profile));
 
         //then
-        assertThrows(UnAuthorizedException.class, () -> profileService.checkLoggedInProfileIsGroupManager(groupId));
+        assertThrows(UnAuthorizedException.class, () -> profileService.checkLoggedInProfileIsGroupManager(userId, groupId));
     }
 
     @Test

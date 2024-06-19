@@ -50,9 +50,6 @@ class GroupJoinFacadeTest {
     @Mock
     Consumers consumers;
 
-    @Mock
-    JwtReader jwtReader;
-
 
     Group group;
     Profile profile;
@@ -61,8 +58,8 @@ class GroupJoinFacadeTest {
     GroupJoinProcessDto joinProcessDto;
 
     Long userId = 1L;
-    Long groupId = 1L;
-    Long requestId = 1L;
+    Long groupId = 2L;
+    Long requestId = 3L;
     String groupName = "groupName";
     String desc = "desc";
     String nickname = "nickname";
@@ -78,12 +75,11 @@ class GroupJoinFacadeTest {
     @DisplayName("대기중인 가입 요청이 있다면 예외가 발생한다")
     void failToJoinByPendingRequestExist() {
         //given
-        when(group.getId()).thenReturn(groupId);
         when(groupService.findGroupById(groupId)).thenReturn(group);
-        when(joinRequestService.pendingRequestExists(groupId)).thenReturn(true);
+        when(joinRequestService.pendingRequestExists(userId, groupId)).thenReturn(true);
 
         //then
-        assertThrows(DuplicateElementException.class, () -> groupJoinFacade.joinGroup(joinRequestDto, groupId));
+        assertThrows(DuplicateElementException.class, () -> groupJoinFacade.joinGroup(joinRequestDto, userId, groupId));
     }
 
     @Test
@@ -91,10 +87,9 @@ class GroupJoinFacadeTest {
     void successToJoinOpenGroup() {
         //given
         firstJoinSetting(JoinCondition.OPEN);
-        when(jwtReader.getUserId()).thenReturn(userId);
 
         //when
-        groupJoinFacade.joinGroup(joinRequestDto, groupId);
+        groupJoinFacade.joinGroup(joinRequestDto, userId, groupId);
 
         //then
         verify(group, times(1)).increaseProfileCount();
@@ -109,7 +104,7 @@ class GroupJoinFacadeTest {
         firstJoinSetting(JoinCondition.APPROVAL_REQUIRED);
 
         //when
-        groupJoinFacade.joinGroup(joinRequestDto, groupId);
+        groupJoinFacade.joinGroup(joinRequestDto, userId, groupId);
 
         //then
         verify(joinRequestService, times(1)).createNewGroupJoinRequest(joinRequestDto, group);
@@ -122,7 +117,7 @@ class GroupJoinFacadeTest {
         joinWithProfileSetting(State.DELETED, JoinCondition.OPEN);
 
         //when
-        groupJoinFacade.joinGroup(joinRequestDto, groupId);
+        groupJoinFacade.joinGroup(joinRequestDto, userId, groupId);
 
         //then
         assertEquals(profile.getState(), State.GENERAL);
@@ -136,7 +131,7 @@ class GroupJoinFacadeTest {
         joinWithProfileSetting(State.DELETED, JoinCondition.APPROVAL_REQUIRED);
 
         //when
-        groupJoinFacade.joinGroup(joinRequestDto, groupId);
+        groupJoinFacade.joinGroup(joinRequestDto, userId, groupId);
 
         //then
         verify(joinRequestService, times(1)).createNewGroupJoinRequest(joinRequestDto, group);
@@ -149,7 +144,7 @@ class GroupJoinFacadeTest {
         joinWithProfileSetting(State.RESTRICTED, JoinCondition.OPEN);
 
         //then
-        assertThrows(UnAuthorizedException.class, () -> groupJoinFacade.joinGroup(joinRequestDto, groupId));
+        assertThrows(UnAuthorizedException.class, () -> groupJoinFacade.joinGroup(joinRequestDto, userId, groupId));
     }
 
     @Test
@@ -159,7 +154,7 @@ class GroupJoinFacadeTest {
         joinWithProfileSetting(State.GENERAL, JoinCondition.OPEN);
 
         //then
-        assertThrows(DuplicateElementException.class, () -> groupJoinFacade.joinGroup(joinRequestDto, groupId));
+        assertThrows(DuplicateElementException.class, () -> groupJoinFacade.joinGroup(joinRequestDto, userId, groupId));
     }
 
 
@@ -194,21 +189,20 @@ class GroupJoinFacadeTest {
     private void joinWithProfileSetting(State state, JoinCondition joinCondition) {
         joinGroupSetting();
         profile = makeProfile(GroupRole.MEMBER, state);
-        when(profileService.getLoggedInProfile(groupId)).thenReturn(profile);
+        when(profileService.getLoggedInProfile(userId, groupId)).thenReturn(profile);
         groupJoinConsumerSetting(state, joinCondition);
     }
 
     private void firstJoinSetting(JoinCondition joinCondition) {
         joinGroupSetting();
         when(group.getJoinCondition()).thenReturn(joinCondition);
-        when(profileService.getLoggedInProfile(groupId)).thenThrow(NoLoggedInProfileException.class);
+        when(profileService.getLoggedInProfile(userId, groupId)).thenThrow(NoLoggedInProfileException.class);
     }
 
     private void joinGroupSetting() {
         joinRequestDto = makeJoinRequestDto();
-        when(group.getId()).thenReturn(groupId);
         when(groupService.findGroupById(groupId)).thenReturn(group);
-        when(joinRequestService.pendingRequestExists(groupId)).thenReturn(false);
+        when(joinRequestService.pendingRequestExists(userId, groupId)).thenReturn(false);
     }
 
 
@@ -221,7 +215,7 @@ class GroupJoinFacadeTest {
 
         // then
         assertThrows(DuplicateElementException.class,
-                () -> groupJoinFacade.processGroupJoinRequest(groupId, requestId, joinProcessDto));
+                () -> groupJoinFacade.processGroupJoinRequest(userId, groupId, requestId, joinProcessDto));
     }
 
     @Test
@@ -231,7 +225,7 @@ class GroupJoinFacadeTest {
         processJoinRequestConsumerSetting(GroupJoinProcessAction.APPROVE);
 
         // when
-        groupJoinFacade.processGroupJoinRequest(groupId, requestId, joinProcessDto);
+        groupJoinFacade.processGroupJoinRequest(userId, groupId, requestId, joinProcessDto);
 
         // then
         assertEquals(joinRequest.getResponse(), JoinResponse.APPROVED);
@@ -245,7 +239,7 @@ class GroupJoinFacadeTest {
         processJoinRequestConsumerSetting(GroupJoinProcessAction.REJECT);
 
         //when
-        groupJoinFacade.processGroupJoinRequest(groupId, requestId, joinProcessDto);
+        groupJoinFacade.processGroupJoinRequest(userId, groupId, requestId, joinProcessDto);
 
         //then
         assertEquals(joinRequest.getResponse(), JoinResponse.REJECTED);

@@ -36,16 +36,15 @@ class GroupJoinRequestServiceTest {
     @Mock
     GroupJoinRequestMapper groupJoinRequestMapper;
 
-    @Mock
-    JwtReader jwtReader;
-
 
     GroupJoinRequest request;
     GroupJoinRequestDto dto;
-    Group group;
-    Long groupId;
+    Group group;;
     JoinRequestSearchCondition condition;
     GroupJoinProcessDto processDto;
+
+    Long userId = 1L;
+    Long groupId = 2L;
 
     @BeforeEach
     void init() {
@@ -55,7 +54,7 @@ class GroupJoinRequestServiceTest {
                 .requestInfo("sample")
                 .nickname("testuser")
                 .build();
-        groupId = 1L;
+
     }
 
     @Test
@@ -90,7 +89,7 @@ class GroupJoinRequestServiceTest {
         JoinRequestSearchCondition condition = JoinRequestSearchCondition.ALL;
 
         //when
-        groupJoinRequestService.getGroupJoinRequestsByGroupIdAndCondition(groupId, condition);
+        groupJoinRequestService.getGroupJoinRequestsByGroupIdAndCondition(userId, groupId, condition);
 
         //then
         verify(groupJoinRequestRepository, times(1)).findAllByGroupId(groupId);
@@ -103,7 +102,7 @@ class GroupJoinRequestServiceTest {
         condition = JoinRequestSearchCondition.PENDING;
 
         //when
-        groupJoinRequestService.getGroupJoinRequestsByGroupIdAndCondition(groupId, condition);
+        groupJoinRequestService.getGroupJoinRequestsByGroupIdAndCondition(userId, groupId, condition);
 
         //then
         verify(groupJoinRequestRepository, times(1))
@@ -117,7 +116,7 @@ class GroupJoinRequestServiceTest {
         condition = JoinRequestSearchCondition.PROCESSED;
 
         //when
-        groupJoinRequestService.getGroupJoinRequestsByGroupIdAndCondition(groupId, condition);
+        groupJoinRequestService.getGroupJoinRequestsByGroupIdAndCondition(userId, groupId, condition);
 
         //then
         verify(groupJoinRequestRepository, times(1))

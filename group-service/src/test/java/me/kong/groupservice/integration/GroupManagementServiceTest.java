@@ -54,13 +54,13 @@ public class GroupManagementServiceTest {
                 .joinCondition(JoinCondition.OPEN)
                 .nickname("testUser")
                 .build();
-
+        Long userId = 1L;
         doThrow(new RuntimeException())
                 .when(profileService).createNewProfile(anyString(), any(Long.class), any(GroupRole.class), any(Group.class));
 
         //when
         try {
-            groupService.createNewGroup(dto);
+            groupService.createNewGroup(dto, userId);
         } catch (RuntimeException e) {
             // 예외 발생!!!
         }
