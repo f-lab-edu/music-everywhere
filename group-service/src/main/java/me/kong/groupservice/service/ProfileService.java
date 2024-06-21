@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProfileService {
 
     private final ProfileRepository profileRepository;
-    private final JwtReader jwtReader;
 
     @Transactional
     public void createNewProfile(String nickname, Long userId, GroupRole groupRole, Group group) {
@@ -36,15 +35,13 @@ public class ProfileService {
     }
 
     @Transactional(readOnly = true, noRollbackFor = NoLoggedInProfileException.class)
-    public Profile getLoggedInProfile(Long groupId) {
-        Long userId = jwtReader.getUserId();
-
+    public Profile getLoggedInProfile(Long userId, Long groupId) {
         return profileRepository.findByUserIdAndGroupId(userId, groupId).orElseThrow(NoLoggedInProfileException::new);
     }
 
     @Transactional(readOnly = true)
-    public void checkLoggedInProfileIsGroupManager(Long groupId) {
-        Profile profile = getLoggedInProfile(groupId);
+    public void checkLoggedInProfileIsGroupManager(Long userId, Long groupId) {
+        Profile profile = getLoggedInProfile(userId, groupId);
 
         if (profile.getGroupRole() != GroupRole.MANAGER) {
             throw new UnAuthorizedException("권한이 없습니다. groupId : "

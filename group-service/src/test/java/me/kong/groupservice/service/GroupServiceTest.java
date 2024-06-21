@@ -30,13 +30,11 @@ class GroupServiceTest {
     GroupMapper groupMapper;
 
     @Mock
-    JwtReader jwtReader;
-
-    @Mock
     ProfileService profileService;
 
     SaveGroupRequestDto dto;
     Group group;
+    Long userId = 1L;
 
     @Test
     @DisplayName("그룹 생성에 성공한다")
@@ -45,13 +43,11 @@ class GroupServiceTest {
         dto = mock(SaveGroupRequestDto.class);
         group = mock(Group.class);
         when(dto.getNickname()).thenReturn("test");
-        when(jwtReader.getUserId()).thenReturn(1L);
         when(groupMapper.toEntity(any(SaveGroupRequestDto.class))).thenReturn(group);
         when(groupRepository.save(any(Group.class))).thenReturn(group);
 
-
         //when
-        groupService.createNewGroup(dto);
+        groupService.createNewGroup(dto, userId);
 
         //then
         verify(groupRepository, times(1)).save(any(Group.class));
@@ -66,6 +62,6 @@ class GroupServiceTest {
         when(groupRepository.save(any())).thenThrow(RuntimeException.class);
 
         //then
-        assertThrows(RuntimeException.class, () -> groupService.createNewGroup(dto));
+        assertThrows(RuntimeException.class, () -> groupService.createNewGroup(dto, userId));
     }
 }

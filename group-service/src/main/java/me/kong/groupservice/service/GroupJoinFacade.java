@@ -34,18 +34,16 @@ public class GroupJoinFacade {
     private final GroupService groupService;
     private final ProfileService profileService;
     private final Consumers consumers;
-    private final JwtReader jwtReader;
-
 
     @RedisLock(key = "'group:'.concat(#groupId)")
-    public void processGroupJoinRequest(Long groupId, Long requestId, GroupJoinProcessDto dto) {
+    public void processGroupJoinRequest(Long userId, Long groupId, Long requestId, GroupJoinProcessDto dto) {
         GroupJoinRequest joinRequest = joinRequestService.getGroupJoinRequestByRequestId(requestId);
 
         if (joinRequest.getResponse() != JoinResponse.PENDING) {
             throw new DuplicateElementException("이미 처리된 가입 요청입니다. 요청 id : " + requestId);
         }
 
-        profileService.checkLoggedInProfileIsGroupManager(joinRequest.getGroup().getId());
+        profileService.checkLoggedInProfileIsGroupManager(userId, groupId);
 
         Consumer<GroupJoinRequest> action = consumers.getJoinRequestConsumer(dto.getAction());
         if (action != null) {
@@ -57,14 +55,14 @@ public class GroupJoinFacade {
     }
 
     @RedisLock(key = "'group:'.concat(#groupId)")
-    public void joinGroup(GroupJoinRequestDto dto, Long groupId) {
+    public void joinGroup(GroupJoinRequestDto dto, Long userId, Long groupId) {
         Group group = groupService.findGroupById(groupId);
-        if (joinRequestService.pendingRequestExists(group.getId())) {
+        if (joinRequestService.pendingRequestExists(userId, groupId)) {
             throw new DuplicateElementException("이미 가입 요청한 그룹입니다.");
         }
 
         try {
-            Profile profile = profileService.getLoggedInProfile(groupId);
+            Profile profile = profileService.getLoggedInProfile(userId, groupId);
             BiConsumer<Profile, GroupJoinRequestDto> action = consumers.getGroupJoinConsumer(profile.getState());
             if (action != null) {
                 action.accept(profile, dto);
@@ -73,15 +71,15 @@ public class GroupJoinFacade {
                 throw new IllegalStateException("No action found : " + profile.getState());
             }
         } catch (NoLoggedInProfileException e) {
-            firstJoinProcess(dto, group);
+            firstJoinProcess(dto, group, userId);
         }
     }
 
-    private void firstJoinProcess(GroupJoinRequestDto dto, Group group) {
+    private void firstJoinProcess(GroupJoinRequestDto dto, Group group, Long userId) {
         if (group.getJoinCondition() == JoinCondition.OPEN) {
             groupService.checkGroupSize(group);
             group.increaseProfileCount();
-            profileService.createNewProfile(dto.getNickname(), jwtReader.getUserId(), GroupRole.MEMBER, group);
+            profileService.createNewProfile(dto.getNickname(), userId, GroupRole.MEMBER, group);
         } else {
             joinRequestService.createNewGroupJoinRequest(dto, group);
         }

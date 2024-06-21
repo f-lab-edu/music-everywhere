@@ -18,7 +18,6 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class GroupJoinRequestService {
 
-    private final JwtReader jwtReader;
     private final GroupJoinRequestRepository joinRequestRepository;
     private final GroupJoinRequestMapper joinRequestMapper;
     private final ProfileService profileService;
@@ -30,8 +29,8 @@ public class GroupJoinRequestService {
     }
 
     @Transactional(readOnly = true)
-    public boolean pendingRequestExists(Long groupId) {
-        return joinRequestRepository.pendingRequestExists(jwtReader.getUserId(), groupId);
+    public boolean pendingRequestExists(Long userId, Long groupId) {
+        return joinRequestRepository.pendingRequestExists(userId, groupId);
     }
 
     @Transactional
@@ -40,10 +39,10 @@ public class GroupJoinRequestService {
     }
 
     @Transactional(readOnly = true)
-    public List<GroupJoinRequest> getGroupJoinRequestsByGroupIdAndCondition(Long groupId, JoinRequestSearchCondition condition) {
+    public List<GroupJoinRequest> getGroupJoinRequestsByGroupIdAndCondition(Long userId, Long groupId, JoinRequestSearchCondition condition) {
         List<GroupJoinRequest> requests;
 
-        profileService.checkLoggedInProfileIsGroupManager(groupId);
+        profileService.checkLoggedInProfileIsGroupManager(userId, groupId);
 
         switch (condition) {
             case PENDING -> {
