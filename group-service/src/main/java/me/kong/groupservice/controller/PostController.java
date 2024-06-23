@@ -2,6 +2,7 @@ package me.kong.groupservice.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import me.kong.commonlibrary.util.JwtReader;
 import me.kong.groupservice.domain.entity.post.Post;
 import me.kong.groupservice.domain.entity.profile.Profile;
 import me.kong.groupservice.dto.request.SavePostRequestDto;
@@ -24,18 +25,19 @@ public class PostController {
     private final PostService postService;
     private final PostMapper postMapper;
     private final ProfileService profileService;
+    private final JwtReader jwtReader;
 
     @PostMapping
     public ResponseEntity<HttpStatus> createNewPost(@PathVariable Long groupId,
                                                     @RequestBody SavePostRequestDto dto) {
-        postService.savePost(dto, groupId);
+        postService.savePost(dto, jwtReader.getUserId(), groupId);
         return RESPONSE_OK;
     }
 
     @GetMapping("/{postId}")
     public ResponseEntity<PostResponseDto> getPost(@PathVariable Long groupId,
                                                    @PathVariable Long postId) {
-        Profile profile = profileService.getLoggedInProfile(groupId);
+        Profile profile = profileService.getLoggedInProfile(jwtReader.getUserId(), groupId);
         Post post = postService.findPost(postId);
 
         return new ResponseEntity<>(postMapper.toDto(post, profile), HttpStatus.OK);
@@ -44,7 +46,7 @@ public class PostController {
     @DeleteMapping("/{postId}")
     public ResponseEntity<HttpStatus> deletePost(@PathVariable Long groupId,
                                                    @PathVariable Long postId) {
-        postService.deletePost(postId);
+        postService.deletePost(postId, jwtReader.getUserId(), groupId);
         return RESPONSE_OK;
     }
 }
