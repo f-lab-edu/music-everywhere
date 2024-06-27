@@ -23,6 +23,10 @@
 ## ✅사용 기술 및 개발 환경
 ![image](https://github.com/f-lab-edu/music-everywhere/assets/70522355/e7b061fb-2c87-4a4c-9e99-32afec254f55)
 
+## ✅서비스 아키텍처
+![image](https://github.com/f-lab-edu/music-everywhere/assets/70522355/ea3a72fc-a78f-4b27-9b45-2573a1f3f747)
+
+
 ## ✅Application UI
 ![image](https://github.com/f-lab-edu/music-everywhere/assets/70522355/defb703f-efb3-4721-9743-c51712afd68e)
 [카카오 오븐](https://ovenapp.io/project/3S1Kpott40rHcrwzORNUdEzoKzHz3PEf#CRgqm) 에서 볼 수 있습니다.
