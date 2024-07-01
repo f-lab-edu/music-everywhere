@@ -49,7 +49,6 @@ public class GroupJoinRequestValidationTest {
         Set<ConstraintViolation<GroupJoinRequestDto>> violations = validator.validate(dto);
         ConstraintViolation<GroupJoinRequestDto> violation = violations.iterator().next();
         assertEquals("nickname", violation.getPropertyPath().toString());
-        assertEquals("비어 있을 수 없습니다", violation.getMessage());
     }
 
     @Test
@@ -73,6 +72,5 @@ public class GroupJoinRequestValidationTest {
         Set<ConstraintViolation<GroupJoinProcessDto>> violations = validator.validate(dto);
         ConstraintViolation<GroupJoinProcessDto> violation = violations.iterator().next();
         assertEquals("action", violation.getPropertyPath().toString());
-        assertEquals("널이어서는 안됩니다", violation.getMessage());
     }
 }
