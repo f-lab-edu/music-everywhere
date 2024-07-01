@@ -37,4 +37,8 @@ out/
 .vscode/
 
 ### ETC ###
-application.yml
+application.properties
+
+application-db.yml
+application-local.yml
+application-redis.yml
