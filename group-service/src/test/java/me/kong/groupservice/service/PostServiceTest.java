@@ -41,8 +41,9 @@ class PostServiceTest {
     Post post;
 
     Long profileId = 1L;
-    Long groupId = 1L;
-    Long postId = 1L;
+    Long groupId = 2L;
+    Long postId = 3L;
+    Long userId = 4L;
     String title = "테스트 제목";
     String content = "테스트 내용";
     PostScope scope = PostScope.GROUP_ONLY;
@@ -54,10 +55,10 @@ class PostServiceTest {
         savePostSetting(scope, State.GENERAL);
 
         //when
-        postService.savePost(savePostRequestDto, groupId);
+        postService.savePost(savePostRequestDto, userId, groupId);
 
         //then
-        verify(profileService, times(1)).getLoggedInProfile(groupId);
+        verify(profileService, times(1)).getLoggedInProfile(userId, groupId);
         verify(postMapper, times(1)).toEntity(savePostRequestDto, groupId, profileId);
         verify(postRepository, times(1)).save(post);
     }
@@ -69,7 +70,7 @@ class PostServiceTest {
         when(postRepository.save(any())).thenThrow(RuntimeException.class);
 
         //when & then
-        assertThrows(RuntimeException.class, () -> postService.savePost(savePostRequestDto, groupId));
+        assertThrows(RuntimeException.class, () -> postService.savePost(savePostRequestDto, userId, groupId));
     }
 
     @Test
@@ -101,7 +102,7 @@ class PostServiceTest {
         when(postRepository.findById(any(Long.class))).thenReturn(Optional.of(post));
 
         //when
-        postService.deletePost(postId);
+        postService.deletePost(postId, userId, groupId);
 
         //then
         assertEquals(State.DELETED, post.getState());
@@ -113,7 +114,7 @@ class PostServiceTest {
         when(profile.getId()).thenReturn(profileId);
         savePostRequestDto = makeSavePostRequestDto(scope);
         post = makePost(state);
-        when(profileService.getLoggedInProfile(groupId)).thenReturn(profile);
+        when(profileService.getLoggedInProfile(userId, groupId)).thenReturn(profile);
         when(postMapper.toEntity(savePostRequestDto, groupId, profile.getId())).thenReturn(post);
     }
 
