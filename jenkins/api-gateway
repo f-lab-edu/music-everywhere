@@ -1,0 +1,52 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Git Clone') {
+            steps {
+                git branch: 'main', url: 'https://github.com/f-lab-edu/music-everywhere.git'
+            }
+        }
+
+        stage('Prepare Config') {
+            steps {
+                script {
+                    withCredentials([file(credentialsId: 'api-gateway-setting', variable: 'API_GATEWAY_SETTING')]) {
+                        sh '''
+                            mkdir -p api-gateway/src/main/resources
+                            cp $API_GATEWAY_SETTING api-gateway/src/main/resources/application.yml
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Set Permissions') {
+            steps {
+                dir('api-gateway/src/main/resources') {
+                    sh 'chmod +rw application.yml'
+                }
+                dir('api-gateway') {
+                    sh 'chmod +x gradlew'
+                }
+            }
+        }
+        stage('Service Build') {
+            steps {
+                dir('api-gateway') {
+                    sh './gradlew clean build'
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Build succeeded.'
+        }
+        failure {
+            echo 'Build failed.'
+        }
+    }
+
+}
