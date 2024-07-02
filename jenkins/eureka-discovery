@@ -1,0 +1,54 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Git Clone') {
+            steps {
+                git branch: 'main', url: 'https://github.com/f-lab-edu/music-everywhere.git'
+            }
+        }
+
+        stage('Prepare Config') {
+            steps {
+                script {
+                    // Jenkins Credentials에서 파일을 워크스페이스로 복사
+                    withCredentials([file(credentialsId: 'discovery-setting', variable: 'DISCOVERY_SETTING')]) {
+                        sh '''
+                            mkdir -p eureka-discovery/src/main/resources
+                            cp $DISCOVERY_SETTING eureka-discovery/src/main/resources/application.yml
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Set Permissions') {
+            steps {
+                dir('eureka-discovery/src/main/resources') {
+                    sh 'chmod +rw application.yml'
+                }
+                dir('eureka-discovery') {
+                    sh 'chmod +x gradlew'
+                }
+            }
+        }
+
+        stage('Service Build') {
+            steps {
+                dir('eureka-discovery') {
+                    sh './gradlew clean build'
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Build succeeded.'
+        }
+        failure {
+            echo 'Build failed.'
+        }
+    }
+
+}
