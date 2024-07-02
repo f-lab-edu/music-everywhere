@@ -1,0 +1,54 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Git Clone') {
+            steps {
+                git branch: 'main', url: 'https://github.com/f-lab-edu/music-everywhere.git'
+            }
+        }
+
+        stage('Prepare Config') {
+            steps {
+                script {
+                    // Jenkins Credentials에서 파일을 워크스페이스로 복사
+                    withCredentials([file(credentialsId: 'music-everywhere-db', variable: 'DB_CONFIG_PATH')]) {
+                        sh '''
+                            mkdir -p user-service/src/main/resources
+                            cp $DB_CONFIG_PATH user-service/src/main/resources/application-db.yml
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Set Permissions') {
+            steps {
+                dir('user-service/src/main/resources') {
+                    sh 'chmod +rw application-db.yml'
+                }
+                dir('user-service') {
+                    sh 'chmod +x gradlew'
+                }
+            }
+        }
+
+        stage('Service Build') {
+            steps {
+                dir('user-service') {
+                    sh './gradlew clean build'
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Build succeeded.'
+        }
+        failure {
+            echo 'Build failed.'
+        }
+    }
+
+}
