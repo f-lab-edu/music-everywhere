@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     environment {
-        JAR_FILE = '/home/jenkins/music-everywhere/group-service/build/libs/group-service-0.0.1-SNAPSHOT.jar'
+        JAR_FILE = '/var/jenkins_home/workspace/group-service_main/group-service/build/libs/group-service-0.0.1-SNAPSHOT.jar'
     }
 
     stages {
@@ -70,7 +70,7 @@ pipeline {
                                     sshTransfer(
                                         cleanRemote: false,
                                         sourceFiles: '${JAR_FILE}',
-                                        removePrefix: '/home/jenkins/music-everywhere/group-service/build/libs',
+                                        removePrefix: '/var/jenkins_home/workspace/group-service_main/group-service/build/libs',
                                         remoteDirectory: './music-everywhere/group-service',
                                     ),
                                     sshTransfer(
