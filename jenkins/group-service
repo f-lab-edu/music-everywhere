@@ -33,11 +33,17 @@ pipeline {
 
         stage('Set Permissions') {
             steps {
+                dir('group-service/src/main/resources') {
+                    sh '''
+                        chmod +rw application-db.yml
+                        chmod +rw application-redis.yml
+                    '''
+                }
+                dir('group-service/src/test/resources') {
+                    sh 'chmod +rw application.properties'
+                }
                 dir('group-service') {
-                    // gradlew 파일에 실행 권한 부여
                     sh 'chmod +x gradlew'
-                    // sh 'chmod +r application-db.yml'
-                    // sh 'chmod +r application-redis.yml'
                 }
             }
         }
