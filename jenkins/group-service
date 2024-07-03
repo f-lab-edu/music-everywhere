@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    
+    environment {
+        JAR_FILE = 'group-service/build/libs/group-service-0.0.1-SNAPSHOT.jar'
+    }
 
     stages {
         stage('Git Clone') {
@@ -43,6 +47,35 @@ pipeline {
                 dir('group-service') {
                     // Gradle 빌드 명령어 실행
                     sh './gradlew clean build'
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    sshPublisher(
+                        failOnError: true,
+                        publishers: [
+                            sshPublisherDesc(
+                                configName: 'ncp-server',
+                                verbose: true,
+                                transfers: [
+                                    sshTransfer(
+                                        cleanRemote: false,
+                                        sourceFiles: '${JAR_FILE}',
+                                        removePrefix: 'group-service/build/libs',
+                                        remoteDirectory: './music-everywhere/group-service',
+                                    ),
+                                    sshTransfer(
+                                        execCommand: '''
+                                            ./music-everywhere/group-service/deploy.sh
+                                        '''
+                                    )
+                                ]
+                            )
+                        ]
+                    )
                 }
             }
         }
