@@ -70,7 +70,7 @@ pipeline {
                                     sshTransfer(
                                         cleanRemote: false,
                                         sourceFiles: '${JAR_FILE}',
-                                        removePrefix: 'group-service/build/libs',
+                                        removePrefix: '/home/jenkins/music-everywhere/group-service/build/libs',
                                         remoteDirectory: './music-everywhere/group-service',
                                     ),
                                     sshTransfer(
