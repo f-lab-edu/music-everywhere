@@ -11,7 +11,8 @@ import me.kong.groupservice.domain.entity.State;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Entity(name = "music_group")
+@Entity
+@Table(name = "music_group")
 public class Group extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

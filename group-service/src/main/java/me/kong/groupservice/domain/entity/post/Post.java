@@ -11,7 +11,8 @@ import me.kong.groupservice.domain.entity.profile.Profile;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Entity(name = "posts")
+@Entity
+@Table(name = "posts")
 public class Post extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,9 +31,11 @@ public class Post extends BaseTimeEntity {
     private State state;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_id")
     private Group group;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "profile_id")
     private Profile profile;
 
     @Builder
