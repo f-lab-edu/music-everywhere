@@ -1,6 +1,7 @@
 package me.kong.groupservice.service;
 
 import me.kong.groupservice.domain.entity.State;
+import me.kong.groupservice.domain.entity.group.Group;
 import me.kong.groupservice.domain.entity.post.Post;
 import me.kong.groupservice.domain.entity.post.PostScope;
 import me.kong.groupservice.domain.entity.profile.Profile;
@@ -35,8 +36,11 @@ class PostServiceTest {
     @Mock
     ProfileService profileService;
 
+    @Mock
+    GroupService groupService;
 
     SavePostRequestDto savePostRequestDto;
+    Group group;
     Profile profile;
     Post post;
 
@@ -44,9 +48,12 @@ class PostServiceTest {
     Long groupId = 2L;
     Long postId = 3L;
     Long userId = 4L;
+
     String title = "테스트 제목";
     String content = "테스트 내용";
+
     PostScope scope = PostScope.GROUP_ONLY;
+
 
 
     @Test
@@ -59,7 +66,7 @@ class PostServiceTest {
 
         //then
         verify(profileService, times(1)).getLoggedInProfile(userId, groupId);
-        verify(postMapper, times(1)).toEntity(savePostRequestDto, groupId, profileId);
+        verify(postMapper, times(1)).toEntity(savePostRequestDto, group, profile);
         verify(postRepository, times(1)).save(post);
     }
 
@@ -110,12 +117,15 @@ class PostServiceTest {
 
 
     private void savePostSetting(PostScope scope, State state) {
+        group = mock();
         profile = mock();
-        when(profile.getId()).thenReturn(profileId);
+
         savePostRequestDto = makeSavePostRequestDto(scope);
         post = makePost(state);
+
+        when(groupService.findGroupById(any())).thenReturn(group);
         when(profileService.getLoggedInProfile(userId, groupId)).thenReturn(profile);
-        when(postMapper.toEntity(savePostRequestDto, groupId, profile.getId())).thenReturn(post);
+        when(postMapper.toEntity(savePostRequestDto, group, profile)).thenReturn(post);
     }
 
     private SavePostRequestDto makeSavePostRequestDto(PostScope scope) {
@@ -132,8 +142,8 @@ class PostServiceTest {
                 .content(content)
                 .postScope(scope)
                 .state(state)
-                .groupId(groupId)
-                .profileId(profileId)
+                .group(group)
+                .profile(profile)
                 .build();
     }
 }
