@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import me.kong.commonlibrary.entity.BaseTimeEntity;
 import me.kong.groupservice.domain.entity.State;
+import me.kong.groupservice.domain.entity.group.Group;
+import me.kong.groupservice.domain.entity.profile.Profile;
 
 
 @Getter
@@ -27,17 +29,19 @@ public class Post extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private State state;
 
-    private Long groupId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Group group;
 
-    private Long profileId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Profile profile;
 
     @Builder
-    public Post(String title, String content, PostScope postScope, State state, Long groupId, Long profileId) {
+    public Post(String title, String content, PostScope postScope, State state, Group group, Profile profile) {
         this.title = title;
         this.content = content;
         this.postScope = postScope;
         this.state = state;
-        this.groupId = groupId;
-        this.profileId = profileId;
+        this.group = group;
+        this.profile = profile;
     }
 }

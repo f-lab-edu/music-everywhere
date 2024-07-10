@@ -40,6 +40,8 @@ public class Group extends BaseTimeEntity {
     @Column(name = "profile_count")
     private Integer profileCount;
 
+
+
     @Builder
     public Group(String name, String description, Integer groupSize, JoinCondition joinCondition, GroupScope groupScope, State state, Long ownerUserId, Integer profileCount) {
         this.name = name;

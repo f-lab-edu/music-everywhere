@@ -1,6 +1,7 @@
 package me.kong.groupservice.mapper;
 
 import me.kong.groupservice.domain.entity.State;
+import me.kong.groupservice.domain.entity.group.Group;
 import me.kong.groupservice.domain.entity.post.Post;
 import me.kong.groupservice.domain.entity.profile.Profile;
 import me.kong.groupservice.dto.request.SavePostRequestDto;
@@ -11,14 +12,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class PostMapper {
 
-    public Post toEntity(SavePostRequestDto dto, Long groupId, Long profileId) {
+    public Post toEntity(SavePostRequestDto dto, Group group, Profile profile) {
         return Post.builder()
                 .title(dto.getTitle())
                 .content(dto.getContent())
                 .postScope(dto.getScope())
                 .state(State.GENERAL)
-                .groupId(groupId)
-                .profileId(profileId)
+                .group(group)
+                .profile(profile)
                 .build();
     }
 
@@ -29,7 +30,7 @@ public class PostMapper {
                 .content(post.getContent())
                 .nickname(profile.getNickname())
                 .profileId(profile.getId())
-                .groupId(post.getGroupId())
+                .groupId(post.getGroup().getId())
                 .updatedDate(post.getUpdatedDate())
                 .build();
     }

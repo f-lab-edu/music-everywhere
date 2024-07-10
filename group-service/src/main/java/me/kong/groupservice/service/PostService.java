@@ -7,8 +7,10 @@ import me.kong.groupservice.common.annotation.GroupId;
 import me.kong.groupservice.common.annotation.GroupOnly;
 import me.kong.groupservice.common.annotation.UserId;
 import me.kong.groupservice.domain.entity.State;
+import me.kong.groupservice.domain.entity.group.Group;
 import me.kong.groupservice.domain.entity.post.Post;
 import me.kong.groupservice.domain.entity.profile.Profile;
+import me.kong.groupservice.domain.repository.GroupRepository;
 import me.kong.groupservice.domain.repository.PostRepository;
 import me.kong.groupservice.dto.request.SavePostRequestDto;
 import me.kong.groupservice.mapper.PostMapper;
@@ -26,14 +28,16 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostMapper postMapper;
     private final ProfileService profileService;
+    private final GroupService groupService;
 
 
     @GroupOnly(role = MEMBER)
     @Transactional
     public void savePost(SavePostRequestDto dto, @UserId Long userId, @GroupId Long groupId) {
+        Group group = groupService.findGroupById(groupId);
         Profile profile = profileService.getLoggedInProfile(userId, groupId);
 
-        Post post = postMapper.toEntity(dto, groupId, profile.getId());
+        Post post = postMapper.toEntity(dto, group, profile);
 
         postRepository.save(post);
     }
