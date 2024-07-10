@@ -5,7 +5,9 @@ import me.kong.groupservice.domain.entity.group.Group;
 import me.kong.groupservice.domain.entity.post.Post;
 import me.kong.groupservice.domain.entity.profile.Profile;
 import me.kong.groupservice.dto.request.SavePostRequestDto;
+import me.kong.groupservice.dto.response.PostListResponseDto;
 import me.kong.groupservice.dto.response.PostResponseDto;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 
@@ -33,5 +35,17 @@ public class PostMapper {
                 .groupId(post.getGroup().getId())
                 .updatedDate(post.getUpdatedDate())
                 .build();
+    }
+
+    public Page<PostListResponseDto> toDto(Page<Post> posts) {
+        return posts.map(p -> PostListResponseDto.builder()
+                .id(p.getId())
+                .title(p.getTitle())
+                .content(p.getContent())
+                .groupId(p.getGroup().getId())
+                .profileId(p.getProfile().getId())
+                .nickname(p.getProfile().getNickname())
+                .updatedDate(p.getUpdatedDate())
+                .build());
     }
 }

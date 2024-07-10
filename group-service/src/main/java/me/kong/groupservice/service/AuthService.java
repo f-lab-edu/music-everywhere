@@ -13,7 +13,7 @@ public class AuthService {
 
     public boolean isGroupMember(Group group, Profile profile) {
         return profile.getGroup().getId().equals(group.getId())
-                && profile.getState() != State.GENERAL;
+                && profile.getState() == State.GENERAL;
     }
 
     public boolean isGroupManager(Group group, Profile profile) {

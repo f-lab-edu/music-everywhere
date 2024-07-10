@@ -10,10 +10,13 @@ import me.kong.groupservice.domain.entity.State;
 import me.kong.groupservice.domain.entity.group.Group;
 import me.kong.groupservice.domain.entity.post.Post;
 import me.kong.groupservice.domain.entity.profile.Profile;
-import me.kong.groupservice.domain.repository.GroupRepository;
 import me.kong.groupservice.domain.repository.PostRepository;
 import me.kong.groupservice.dto.request.SavePostRequestDto;
 import me.kong.groupservice.mapper.PostMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,5 +62,12 @@ public class PostService {
     public void deletePost(Long id, @UserId Long userId, @GroupId Long groupId) {
         Post post = findPost(id);
         post.setState(State.DELETED);
+    }
+
+    @Transactional
+    public Page<Post> getRecentPosts(Long groupId, State state, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+
+        return postRepository.findRecentPost(groupId, state, pageable);
     }
 }
