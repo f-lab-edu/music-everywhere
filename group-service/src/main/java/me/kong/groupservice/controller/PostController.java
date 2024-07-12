@@ -6,8 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import me.kong.commonlibrary.util.JwtReader;
 import me.kong.groupservice.domain.entity.State;
 import me.kong.groupservice.domain.entity.post.Post;
+import me.kong.groupservice.domain.entity.post.PostScope;
 import me.kong.groupservice.domain.entity.profile.Profile;
 import me.kong.groupservice.dto.request.SavePostRequestDto;
+import me.kong.groupservice.dto.request.condition.PostSearchCondition;
 import me.kong.groupservice.dto.response.PostListResponseDto;
 import me.kong.groupservice.dto.response.PostResponseDto;
 import me.kong.groupservice.mapper.PostMapper;
@@ -23,7 +25,7 @@ import static me.kong.commonlibrary.constant.HttpStatusResponseEntity.RESPONSE_O
 
 @Slf4j
 @RestController
-@RequestMapping("/api/groups/{groupId}/posts")
+@RequestMapping("/api/groups")
 @RequiredArgsConstructor
 public class PostController {
 
@@ -32,26 +34,47 @@ public class PostController {
     private final ProfileService profileService;
     private final JwtReader jwtReader;
 
-    @GetMapping
+
+    @GetMapping("/posts")
+    public ResponseEntity<Page<PostListResponseDto>> getPostList(
+            @RequestParam(required = false , defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "10") int size) {
+
+        PostSearchCondition cond = PostSearchCondition.builder()
+                .postScope(PostScope.PUBLIC)
+                .state(State.GENERAL)
+                .build();
+
+        Page<Post> posts = postService.getRecentPosts(cond, page, size);
+
+        return new ResponseEntity<>(postMapper.toDto(posts), HttpStatus.OK);
+    }
+
+    @GetMapping("/{groupId}/posts")
     public ResponseEntity<Page<PostListResponseDto>> getPostList(
             @PathVariable Long groupId,
             @RequestParam(required = false, defaultValue = "GENERAL") State state,
             @RequestParam(required = false , defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "10") int size) {
 
-        Page<Post> posts = postService.getRecentPosts(groupId, state, page, size);
+        PostSearchCondition cond = PostSearchCondition.builder()
+                .groupId(groupId)
+                .state(state)
+                .build();
+
+        Page<Post> posts = postService.getRecentPosts(cond, page, size);
 
         return new ResponseEntity<>(postMapper.toDto(posts), HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping("/{groupId}/posts")
     public ResponseEntity<HttpStatus> createNewPost(@PathVariable Long groupId,
                                                     @RequestBody SavePostRequestDto dto) {
         postService.savePost(dto, jwtReader.getUserId(), groupId);
         return RESPONSE_OK;
     }
 
-    @GetMapping("/{postId}")
+    @GetMapping("/{groupId}/posts/{postId}")
     public ResponseEntity<PostResponseDto> getPost(@PathVariable Long groupId,
                                                    @PathVariable Long postId) {
         Profile profile = profileService.getLoggedInProfile(jwtReader.getUserId(), groupId);
@@ -60,7 +83,7 @@ public class PostController {
         return new ResponseEntity<>(postMapper.toDto(post, profile), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{postId}")
+    @DeleteMapping("/{groupId}/posts/{postId}")
     public ResponseEntity<HttpStatus> deletePost(@PathVariable Long groupId,
                                                    @PathVariable Long postId) {
         postService.deletePost(postId, jwtReader.getUserId(), groupId);
