@@ -49,4 +49,5 @@
     [동시성 문제와 분산 락](https://velog.io/@hyeok-kong/%EB%8F%99%EC%8B%9C%EC%84%B1-%EB%AC%B8%EC%A0%9C%EC%99%80-%EB%B6%84%EC%82%B0-%EB%9D%BD)
 #### 5. Consumer 도입으로 냄새나는 switch 구문 리팩토링하기
 - 리팩토링 과정 --> [switch에서 냄새나는 것 같아..!](https://velog.io/@hyeok-kong/switch%EC%97%90%EC%84%9C-%EB%83%84%EC%83%88%EB%82%98%EB%8A%94-%EA%B2%83-%EA%B0%99%EC%95%84)
-#### 6. Jenkins 적용 과정
+#### 6. Jenkins build strategy 적용기 - 배포 프로세스를 마이크로서비스별로 실행되도록 설정해보자!
+- 도입 과정 --> [CI/CD Pipeline을 구축해보자!](https://velog.io/@hyeok-kong/jenkins%EB%A1%9C-CICD-Pipeline-%EA%B5%AC%EC%B6%95)
