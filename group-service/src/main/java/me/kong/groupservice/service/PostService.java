@@ -12,6 +12,7 @@ import me.kong.groupservice.domain.entity.post.Post;
 import me.kong.groupservice.domain.entity.profile.Profile;
 import me.kong.groupservice.domain.repository.PostRepository;
 import me.kong.groupservice.dto.request.SavePostRequestDto;
+import me.kong.groupservice.dto.request.condition.PostSearchCondition;
 import me.kong.groupservice.mapper.PostMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -65,9 +66,9 @@ public class PostService {
     }
 
     @Transactional
-    public Page<Post> getRecentPosts(Long groupId, State state, int page, int size) {
+    public Page<Post> getRecentPosts(PostSearchCondition cond, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
 
-        return postRepository.findRecentPost(groupId, state, pageable);
+        return postRepository.searchRecentPosts(cond, pageable);
     }
 }
