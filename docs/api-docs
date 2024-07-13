@@ -306,8 +306,256 @@ paths:
         '409':
           description: 이미 처리된 요청
           
-  
+  /groups/posts:
+    get:
+      tags:
+        - posts
+      summary: 전체 게시글 조회
+      description: PUBLIC 상태의 전체 게시글을 조회합니다.
+      parameters:
+        - in: query
+          name: cursorId
+          required: false
+          schema:
+            type: integer
+        - in: query
+          name: size
+          required: false
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: 게시글 조회 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 9999
+                        title:
+                          type: string
+                          example: '게시글 제목'
+                        content:
+                          type: string
+                          example: '게시글 내용'
+                        groupId:
+                          type: integer
+                          example: 1
+                        profileId:
+                          type: integer
+                          description: '작성자 프로필 ID'
+                          example: 1
+                        nickname:
+                          type: string
+                          example: 'testUser'
+                        updatedDate:
+                          type: string
+                          format: date-time
+                          example: '2024-07-10T16:51:37'
+                  pageable:
+                    type: object
+                    properties:
+                      pageNumber:
+                        type: integer
+                        example: 0
+                      pageSize:
+                        type: integer
+                        example: 10
+                      sort:
+                        type: object
+                        properties:
+                          empty:
+                            type: boolean
+                            example: true
+                          unsorted:
+                            type: boolean
+                            example: true
+                          sorted:
+                            type: boolean
+                            example: false
+                      offset:
+                        type: integer
+                        example: 0
+                      paged:
+                        type: boolean
+                        example: true
+                      unpaged:
+                        type: boolean
+                        example: false
+                  size:
+                    type: integer
+                    example: 10
+                  number:
+                    type: integer
+                    example: 0
+                  sort:
+                    type: object
+                    properties:
+                      empty:
+                        type: boolean
+                        example: true
+                      unsorted:
+                        type: boolean
+                        example: true
+                      sorted:
+                        type: boolean
+                        example: false
+                  first:
+                    type: boolean
+                    example: true
+                  last:
+                    type: boolean
+                    example: false
+                  numberOfElements:
+                    type: integer
+                    example: 10
+                  empty:
+                    type: boolean
+                    example: false
+        '403':
+          description: 권한 부족(가입하지 않은 그룹 등)
+          
+          
   /groups/{groupId}/posts:
+    get:
+      tags:
+        - posts
+      summary: 그룹에 포함된 게시글 조회
+      description: 그룹 게시글을 조회합니다. 그룹 회원만 가능합니다.
+      parameters:
+        - in: path
+          name: groupId
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: cursorId
+          required: false
+          schema:
+            type: integer
+        - in: query
+          name: state
+          required: false
+          schema:
+            type: string
+            enum:
+              - GENERAL
+              - DELETED
+              - RESTRICTED
+            default: GENERAL
+        - in: query
+          name: size
+          required: false
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: 게시글 조회 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 9999
+                        title:
+                          type: string
+                          example: '게시글 제목'
+                        content:
+                          type: string
+                          example: '게시글 내용'
+                        groupId:
+                          type: integer
+                          example: 1
+                        profileId:
+                          type: integer
+                          description: '작성자 프로필 ID'
+                          example: 1
+                        nickname:
+                          type: string
+                          example: 'testUser'
+                        updatedDate:
+                          type: string
+                          format: date-time
+                          example: '2024-07-10T16:51:37'
+                  pageable:
+                    type: object
+                    properties:
+                      pageNumber:
+                        type: integer
+                        example: 0
+                      pageSize:
+                        type: integer
+                        example: 10
+                      sort:
+                        type: object
+                        properties:
+                          empty:
+                            type: boolean
+                            example: true
+                          unsorted:
+                            type: boolean
+                            example: true
+                          sorted:
+                            type: boolean
+                            example: false
+                      offset:
+                        type: integer
+                        example: 0
+                      paged:
+                        type: boolean
+                        example: true
+                      unpaged:
+                        type: boolean
+                        example: false
+                  size:
+                    type: integer
+                    example: 10
+                  number:
+                    type: integer
+                    example: 0
+                  sort:
+                    type: object
+                    properties:
+                      empty:
+                        type: boolean
+                        example: true
+                      unsorted:
+                        type: boolean
+                        example: true
+                      sorted:
+                        type: boolean
+                        example: false
+                  first:
+                    type: boolean
+                    example: true
+                  last:
+                    type: boolean
+                    example: false
+                  numberOfElements:
+                    type: integer
+                    example: 10
+                  empty:
+                    type: boolean
+                    example: false
+        '403':
+          description: 권한 부족(가입하지 않은 그룹 등)
+
     post:
       tags:
         - posts
