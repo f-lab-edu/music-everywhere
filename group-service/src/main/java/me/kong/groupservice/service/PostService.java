@@ -14,10 +14,7 @@ import me.kong.groupservice.domain.repository.PostRepository;
 import me.kong.groupservice.dto.request.SavePostRequestDto;
 import me.kong.groupservice.dto.request.condition.PostSearchCondition;
 import me.kong.groupservice.mapper.PostMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,10 +62,18 @@ public class PostService {
         post.setState(State.DELETED);
     }
 
-    @Transactional
-    public Page<Post> getRecentPosts(PostSearchCondition cond, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+    @GroupOnly(role = MEMBER)
+    @Transactional(readOnly = true)
+    public Slice<Post> getRecentGroupPosts(Long cursorId, PostSearchCondition cond, int size) {
+        Pageable pageable = PageRequest.of(0, size);
 
-        return postRepository.searchRecentPosts(cond, pageable);
+        return postRepository.searchRecentPosts(cursorId, cond, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Slice<Post> getRecentPublicPosts(Long cursorId, PostSearchCondition cond, int size) {
+        Pageable pageable = PageRequest.of(0, size);
+
+        return postRepository.searchRecentPosts(cursorId, cond, pageable);
     }
 }

@@ -7,9 +7,7 @@ import lombok.RequiredArgsConstructor;
 import me.kong.groupservice.domain.entity.post.Post;
 import me.kong.groupservice.domain.entity.post.PostScope;
 import me.kong.groupservice.dto.request.condition.PostSearchCondition;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 
 import java.util.List;
 
@@ -24,7 +22,7 @@ public class PostRepositoryImpl implements CustomPostRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<Post> searchRecentPosts(PostSearchCondition cond, Pageable pageable) {
+    public Slice<Post> searchRecentPosts(Long cursorId, PostSearchCondition cond, Pageable pageable) {
         List<Post> content = queryFactory
                 .select(post)
                 .from(post)
@@ -33,23 +31,24 @@ public class PostRepositoryImpl implements CustomPostRepository {
                 .where(
                         groupIdEq(cond.getGroupId()),
                         postScopeEq(cond.getPostScope()),
-                        post.state.eq(cond.getState())
+                        post.state.eq(cond.getState()),
+                        cursorIdLt(cursorId)
                 )
+                .orderBy(post.id.desc())
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+                .limit(pageable.getPageSize() + 1)
                 .fetch();
 
-        Long totalCount = queryFactory
-                .select(post.count())
-                .from(post)
-                .where(
-                        groupIdEq(cond.getGroupId()),
-                        postScopeEq(cond.getPostScope()),
-                        post.state.eq(cond.getState())
-                )
-                .fetchOne();
+        boolean hasNext = false;
+        if (content.size() > pageable.getPageSize()) {
+            content.remove(pageable.getPageSize());
+            hasNext = true;
+        }
+        return new SliceImpl<>(content, pageable, hasNext);
+    }
 
-        return new PageImpl<>(content, pageable, totalCount);
+    private BooleanExpression cursorIdLt(Long cursorId) {
+        return cursorId != null ? post.id.lt(cursorId) : null;
     }
 
     private BooleanExpression postScopeEq(PostScope postScope) {
