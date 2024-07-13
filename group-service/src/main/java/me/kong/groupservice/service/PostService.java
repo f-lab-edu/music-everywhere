@@ -64,7 +64,7 @@ public class PostService {
 
     @GroupOnly(role = MEMBER)
     @Transactional(readOnly = true)
-    public Slice<Post> getRecentGroupPosts(Long cursorId, PostSearchCondition cond, int size) {
+    public Slice<Post> getRecentGroupPosts(Long cursorId, PostSearchCondition cond, int size,  @UserId Long userId, @GroupId Long groupId) {
         Pageable pageable = PageRequest.of(0, size);
 
         return postRepository.searchRecentPosts(cursorId, cond, pageable);
