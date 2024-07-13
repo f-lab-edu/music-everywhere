@@ -51,3 +51,5 @@
 - 리팩토링 과정 --> [switch에서 냄새나는 것 같아..!](https://velog.io/@hyeok-kong/switch%EC%97%90%EC%84%9C-%EB%83%84%EC%83%88%EB%82%98%EB%8A%94-%EA%B2%83-%EA%B0%99%EC%95%84)
 #### 6. Jenkins build strategy 적용기 - 배포 프로세스를 마이크로서비스별로 실행되도록 설정해보자!
 - 도입 과정 --> [CI/CD Pipeline을 구축해보자!](https://velog.io/@hyeok-kong/jenkins%EB%A1%9C-CICD-Pipeline-%EA%B5%AC%EC%B6%95)
+#### 7. 커서 기반 페이징을 선택한 이유 (feat. 성능 테스트 with JMeter)
+- 도입 과정 및 선택 이유 --> [페이징 때문에 서비스가 망하는 과정](https://velog.io/@hyeok-kong/%ED%8E%98%EC%9D%B4%EC%A7%95-%EB%95%8C%EB%AC%B8%EC%97%90-%EC%84%9C%EB%B9%84%EC%8A%A4%EA%B0%80-%EB%A7%9D%ED%95%98%EB%8A%94-%EA%B3%BC%EC%A0%95)
