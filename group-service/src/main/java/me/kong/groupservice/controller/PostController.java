@@ -15,7 +15,7 @@ import me.kong.groupservice.dto.response.PostResponseDto;
 import me.kong.groupservice.mapper.PostMapper;
 import me.kong.groupservice.service.PostService;
 import me.kong.groupservice.service.ProfileService;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,8 +36,8 @@ public class PostController {
 
 
     @GetMapping("/posts")
-    public ResponseEntity<Page<PostListResponseDto>> getPostList(
-            @RequestParam(required = false , defaultValue = "0") int page,
+    public ResponseEntity<Slice<PostListResponseDto>> getPostList(
+            @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size) {
 
         PostSearchCondition cond = PostSearchCondition.builder()
@@ -45,16 +45,16 @@ public class PostController {
                 .state(State.GENERAL)
                 .build();
 
-        Page<Post> posts = postService.getRecentPosts(cond, page, size);
+        Slice<Post> posts = postService.getRecentPublicPosts(cursorId, cond, size);
 
         return new ResponseEntity<>(postMapper.toDto(posts), HttpStatus.OK);
     }
 
     @GetMapping("/{groupId}/posts")
-    public ResponseEntity<Page<PostListResponseDto>> getPostList(
+    public ResponseEntity<Slice<PostListResponseDto>> getPostSlice(
             @PathVariable Long groupId,
+            @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false, defaultValue = "GENERAL") State state,
-            @RequestParam(required = false , defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "10") int size) {
 
         PostSearchCondition cond = PostSearchCondition.builder()
@@ -62,7 +62,7 @@ public class PostController {
                 .state(state)
                 .build();
 
-        Page<Post> posts = postService.getRecentPosts(cond, page, size);
+        Slice<Post> posts = postService.getRecentGroupPosts(cursorId, cond, size);
 
         return new ResponseEntity<>(postMapper.toDto(posts), HttpStatus.OK);
     }
