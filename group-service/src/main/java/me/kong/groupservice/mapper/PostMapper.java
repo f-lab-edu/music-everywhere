@@ -7,7 +7,7 @@ import me.kong.groupservice.domain.entity.profile.Profile;
 import me.kong.groupservice.dto.request.SavePostRequestDto;
 import me.kong.groupservice.dto.response.PostListResponseDto;
 import me.kong.groupservice.dto.response.PostResponseDto;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Component;
 
 
@@ -37,7 +37,7 @@ public class PostMapper {
                 .build();
     }
 
-    public Page<PostListResponseDto> toDto(Page<Post> posts) {
+    public Slice<PostListResponseDto> toDto(Slice<Post> posts) {
         return posts.map(p -> PostListResponseDto.builder()
                 .id(p.getId())
                 .title(p.getTitle())
