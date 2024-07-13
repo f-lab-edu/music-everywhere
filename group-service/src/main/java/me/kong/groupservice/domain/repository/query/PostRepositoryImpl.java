@@ -35,7 +35,6 @@ public class PostRepositoryImpl implements CustomPostRepository {
                         cursorIdLt(cursorId)
                 )
                 .orderBy(post.id.desc())
-                .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
 
