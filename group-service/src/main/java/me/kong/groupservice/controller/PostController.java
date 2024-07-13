@@ -62,7 +62,7 @@ public class PostController {
                 .state(state)
                 .build();
 
-        Slice<Post> posts = postService.getRecentGroupPosts(cursorId, cond, size);
+        Slice<Post> posts = postService.getRecentGroupPosts(cursorId, cond, size, jwtReader.getUserId(), groupId);
 
         return new ResponseEntity<>(postMapper.toDto(posts), HttpStatus.OK);
     }
