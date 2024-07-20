@@ -9,6 +9,7 @@
 ## ✅개발 시 신경 쓴 것들
 #### - **문서를 통한 커뮤니케이션** 실천하기
   - API 문서 작성하기 --> [문서 링크](https://github.com/f-lab-edu/music-everywhere/blob/main/docs/api-docs)
+  - 카프카 토픽 네이밍 규칙 --> [문서 링크](https://github.com/f-lab-edu/music-everywhere/tree/main/docs/kafka)
   - 발생했던 문제, 장애에 대해 `원인 -> 해결과정 -> 결론` 형식으로 정리하여 동일한 문제 발생을 막기
  
 #### - 객체 지향 프로그래밍에 대해 고려하여 개발하기
