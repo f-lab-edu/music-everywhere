@@ -1,3 +1,6 @@
 spring:
   application:
     name: payment-service
+
+  profiles:
+    include: db
