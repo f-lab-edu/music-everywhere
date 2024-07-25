@@ -1,11 +1,25 @@
 package me.kong.paymentservice.service;
 
-import me.kong.paymentservice.domain.entity.PayEvent;
+import lombok.RequiredArgsConstructor;
+import me.kong.paymentservice.domain.entity.State;
+import me.kong.paymentservice.service.strategy.PayStrategy;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
-public interface PayService {
+@Service
+@RequiredArgsConstructor
+public class PayService {
 
-    PayEvent processPayment(BigDecimal amount, Long userId);
+    private final PayEventService payEventService;
+    private final PayStrategy payStrategy;
 
+    public void processPayRequest(BigDecimal amount, Long userId) {
+        if (payStrategy.process(amount, userId)) {
+            payEventService.savePayResult(amount, State.SUCCESS, userId);
+        } else {
+            payEventService.savePayResult(amount, State.FAIL, userId);
+        }
+
+    }
 }
