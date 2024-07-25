@@ -1,10 +1,7 @@
 package me.kong.paymentservice.domain.entity;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,12 +20,16 @@ public class PayEvent {
 
     private BigDecimal amount;
 
+    @Enumerated(EnumType.STRING)
+    private State state;
+
     @Column(name = "user_id")
     private Long userId;
 
     @Builder
-    public PayEvent(BigDecimal amount, Long userId) {
+    public PayEvent(BigDecimal amount, State state, Long userId) {
         this.amount = amount;
+        this.state = state;
         this.userId = userId;
     }
 }
