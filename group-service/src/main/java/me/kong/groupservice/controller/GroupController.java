@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.kong.commonlibrary.util.JwtReader;
 import me.kong.groupservice.domain.entity.group.Group;
+import me.kong.groupservice.dto.event.GroupMemberIncreaseRequestDto;
 import me.kong.groupservice.dto.request.GroupJoinProcessDto;
 import me.kong.groupservice.dto.request.GroupJoinRequestDto;
 import me.kong.groupservice.dto.request.enums.JoinRequestSearchCondition;
@@ -14,6 +15,7 @@ import me.kong.groupservice.dto.response.GroupJoinResponseDto;
 import me.kong.groupservice.dto.response.GroupResponseDto;
 import me.kong.groupservice.mapper.GroupJoinRequestMapper;
 import me.kong.groupservice.mapper.GroupMapper;
+import me.kong.groupservice.mapper.GroupMemberIncreaseRequestMapper;
 import me.kong.groupservice.service.GroupJoinFacade;
 import me.kong.groupservice.service.GroupJoinRequestService;
 import me.kong.groupservice.service.GroupService;
@@ -35,6 +37,7 @@ public class GroupController {
     private final GroupJoinRequestService joinRequestService;
     private final GroupMapper groupMapper;
     private final GroupJoinRequestMapper requestMapper;
+    private final GroupMemberIncreaseRequestMapper memberIncreaseRequestMapper;
     private final GroupJoinFacade groupJoinFacade;
     private final JwtReader jwtReader;
 
@@ -49,7 +52,18 @@ public class GroupController {
     public ResponseEntity<HttpStatus> joinGroup(@PathVariable Long groupId, @RequestBody @Valid GroupJoinRequestDto dto) {
         groupJoinFacade.joinGroup(dto, jwtReader.getUserId(), groupId);
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return RESPONSE_OK;
+    }
+
+    @PostMapping("{groupId}/increase-group-size")
+    public ResponseEntity<HttpStatus> increaseGroupSize(
+            @PathVariable Long groupId,
+            @RequestParam(required = true) Integer size) {
+        GroupMemberIncreaseRequestDto dto = memberIncreaseRequestMapper.toDto(groupId, jwtReader.getUserId(), size);
+
+        groupService.requestIncreaseGroupSize(dto);
+
+        return RESPONSE_OK;
     }
 
     @GetMapping("{groupId}/requests")
