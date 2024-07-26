@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import me.kong.paymentservice.dto.enums.PaymentStatus;
 
 import java.math.BigDecimal;
 
@@ -21,15 +22,15 @@ public class PayEvent {
     private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
-    private State state;
+    private PaymentStatus status;
 
     @Column(name = "user_id")
     private Long userId;
 
     @Builder
-    public PayEvent(BigDecimal amount, State state, Long userId) {
+    public PayEvent(BigDecimal amount, PaymentStatus status, Long userId) {
         this.amount = amount;
-        this.state = state;
+        this.status = status;
         this.userId = userId;
     }
 }

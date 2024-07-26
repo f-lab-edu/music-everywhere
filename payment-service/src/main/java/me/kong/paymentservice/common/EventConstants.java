@@ -1,17 +1,8 @@
 package me.kong.paymentservice.common;
 
-public enum EventConstants {
+public class EventConstants {
 
-    GROUP_MEMBER_INCREASE("dev.group.payment.request.increase-group-size"),
-    ;
+    public static final String GROUP_MEMBER_INCREASE_REQUEST = "dev.group.payment.request.increase-group-size";
+    public static final String GROUP_MEMBER_INCREASE_RESPONSE = "dev.payment.group.response.increase-group-size";
 
-    private final String topicName;
-
-    private EventConstants(String topicName) {
-        this.topicName = topicName;
-    }
-
-    public String getTopicName() {
-        return topicName;
-    }
 }
