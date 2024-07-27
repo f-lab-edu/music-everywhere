@@ -3,6 +3,7 @@ package me.kong.groupservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.kong.groupservice.common.annotation.RedisLock;
 import me.kong.groupservice.common.exception.GroupFullException;
 import me.kong.groupservice.domain.entity.profile.GroupRole;
 import me.kong.groupservice.domain.entity.group.Group;
@@ -50,8 +51,14 @@ public class GroupService {
         }
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public void requestIncreaseGroupSize(GroupMemberIncreaseRequestDto dto) {
-        kafkaProducer.send(GROUP_MEMBER_INCREASE.getTopicName(), dto);
+        kafkaProducer.send(GROUP_MEMBER_INCREASE_REQUEST, dto);
     }
+
+    @RedisLock(key = "'group-size:'.concat(#groupId)")
+    public void increaseGroupSize(Long groupId, Integer size) {
+        groupRepository.updateGroupSize(groupId, size);
+    }
+
 }
