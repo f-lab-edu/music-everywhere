@@ -3,4 +3,4 @@ spring:
     name: payment-service
 
   profiles:
-    include: db
+    include: db, kafka

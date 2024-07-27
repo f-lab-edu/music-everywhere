@@ -15,4 +15,4 @@ spring:
     exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
 
   profiles:
-    include: db, route, redis
+    include: db, route, redis, kafka

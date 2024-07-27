@@ -1,8 +1,8 @@
 package me.kong.paymentservice.service;
 
 import me.kong.paymentservice.domain.entity.PayEvent;
-import me.kong.paymentservice.domain.entity.State;
 import me.kong.paymentservice.domain.repository.PayEventRepository;
+import me.kong.paymentservice.dto.enums.PaymentStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,7 +12,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
@@ -32,11 +31,11 @@ class PayEventServiceTest {
     void success_pay_process() {
         //given
         BigDecimal amount = new BigDecimal("100");
-        State state = State.SUCCESS;
+        PaymentStatus status = PaymentStatus.SUCCESS;
         Long userId = 1L;
 
         //when
-        payEventService.savePayResult(amount, state, userId);
+        payEventService.savePayResult(amount, status, userId);
 
         //then
         verify(payEventRepository, times(1)).save(any(PayEvent.class));

@@ -1,7 +1,10 @@
 package me.kong.paymentservice.service;
 
-import me.kong.paymentservice.domain.entity.State;
-import me.kong.paymentservice.domain.repository.PayEventRepository;
+import me.kong.paymentservice.dto.enums.PaymentStatus;
+import me.kong.paymentservice.dto.event.GroupMemberIncreaseRequestDto;
+import me.kong.paymentservice.dto.event.GroupMemberIncreaseResponseDto;
+import me.kong.paymentservice.event.KafkaProducer;
+import me.kong.paymentservice.mapper.GroupMemberIncreaseMapper;
 import me.kong.paymentservice.service.strategy.PayStrategy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 
+import static me.kong.paymentservice.common.EventConstants.*;
 import static org.mockito.Mockito.*;
 
 
@@ -27,9 +31,20 @@ public class PayServiceTest {
     @Mock
     PayStrategy payStrategy;
 
+    @Mock
+    GroupMemberIncreaseMapper groupMemberIncreaseMapper;
 
-    BigDecimal amount;
-    Long userId;
+    @Mock
+    KafkaProducer kafkaProducer;
+
+
+    Long groupId = 1L;
+    Long userId = 2L;
+    Integer additionalMembers = 10;
+    BigDecimal amount = new BigDecimal(1000);
+
+    GroupMemberIncreaseRequestDto requestDto;
+    GroupMemberIncreaseResponseDto responseDto;
 
 
     @Test
@@ -38,12 +53,22 @@ public class PayServiceTest {
         //given
         payProcessSetting();
         when(payStrategy.process(amount, userId)).thenReturn(true);
+        responseDto = GroupMemberIncreaseResponseDto.builder()
+                .groupId(groupId)
+                .userId(userId)
+                .additionalMembers(additionalMembers)
+                .amount(amount)
+                .status(PaymentStatus.SUCCESS)
+                .build();
+        when(groupMemberIncreaseMapper.toResponse(requestDto, PaymentStatus.SUCCESS))
+                .thenReturn(responseDto);
 
         //when
-        payService.processPayRequest(amount, userId);
+        payService.processPayRequest(requestDto);
 
         //then
-        verify(payEventService, times(1)).savePayResult(amount, State.SUCCESS, userId);
+        verify(payEventService, times(1)).savePayResult(amount, PaymentStatus.SUCCESS, userId);
+        verify(kafkaProducer, times(1)).send(GROUP_MEMBER_INCREASE_RESPONSE, responseDto);
     }
 
     @Test
@@ -54,14 +79,18 @@ public class PayServiceTest {
         when(payStrategy.process(amount, userId)).thenReturn(false);
 
         //when
-        payService.processPayRequest(amount, userId);
+        payService.processPayRequest(requestDto);
 
         //then
-        verify(payEventService, times(1)).savePayResult(amount, State.FAIL, userId);
+        verify(payEventService, times(1)).savePayResult(amount, PaymentStatus.FAIL, userId);
     }
 
     private void payProcessSetting() {
-        amount = new BigDecimal("100");
-        userId = 1L;
+        requestDto = GroupMemberIncreaseRequestDto.builder()
+                .groupId(groupId)
+                .userId(userId)
+                .additionalMembers(additionalMembers)
+                .amount(amount)
+                .build();
     }
 }
