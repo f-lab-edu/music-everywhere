@@ -1,4 +1,4 @@
-package me.kong.groupservice.common.util;
+package me.kong.commonlibrary.util;
 
 import java.math.BigDecimal;
 

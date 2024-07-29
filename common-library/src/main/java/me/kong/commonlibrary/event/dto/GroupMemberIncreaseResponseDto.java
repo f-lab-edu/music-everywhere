@@ -1,10 +1,9 @@
-package me.kong.groupservice.dto.event;
+package me.kong.commonlibrary.event.dto;
 
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import me.kong.groupservice.dto.enums.PaymentStatus;
 
 import java.math.BigDecimal;
 
@@ -16,15 +15,13 @@ public class GroupMemberIncreaseResponseDto {
     private Long userId;
     private Integer additionalMembers;
     private BigDecimal amount;
-    private PaymentStatus status;
 
     @Builder
     public GroupMemberIncreaseResponseDto(Long groupId, Long userId,
-                                          Integer additionalMembers, BigDecimal amount, PaymentStatus status) {
+                                          Integer additionalMembers, BigDecimal amount) {
         this.groupId = groupId;
         this.userId = userId;
         this.additionalMembers = additionalMembers;
         this.amount = amount;
-        this.status = status;
     }
 }

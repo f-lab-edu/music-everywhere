@@ -1,4 +1,4 @@
-package me.kong.groupservice.common;
+package me.kong.commonlibrary.event;
 
 public class EventConstants {
 

@@ -1,11 +1,12 @@
-package me.kong.groupservice.dto.event;
+package me.kong.commonlibrary.event.dto;
 
 import lombok.Builder;
 import lombok.Getter;
 
 import java.math.BigDecimal;
 
-import static me.kong.groupservice.common.util.AmountCalculator.*;
+import static me.kong.commonlibrary.util.AmountCalculator.getGroupIncreaseAmount;
+
 
 @Getter
 public class GroupMemberIncreaseRequestDto {
@@ -20,5 +21,13 @@ public class GroupMemberIncreaseRequestDto {
         this.userId = userId;
         this.additionalMembers = additionalMembers;
         this.amount = getGroupIncreaseAmount(additionalMembers);
+    }
+
+    @Builder
+    public GroupMemberIncreaseRequestDto(Long groupId, Long userId, Integer additionalMembers, BigDecimal amount) {
+        this.groupId = groupId;
+        this.userId = userId;
+        this.additionalMembers = additionalMembers;
+        this.amount = amount;
     }
 }
