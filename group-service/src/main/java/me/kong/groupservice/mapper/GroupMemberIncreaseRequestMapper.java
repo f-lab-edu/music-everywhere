@@ -1,6 +1,6 @@
 package me.kong.groupservice.mapper;
 
-import me.kong.groupservice.dto.event.GroupMemberIncreaseRequestDto;
+import me.kong.commonlibrary.event.dto.GroupMemberIncreaseRequestDto;
 import org.springframework.stereotype.Component;
 
 @Component

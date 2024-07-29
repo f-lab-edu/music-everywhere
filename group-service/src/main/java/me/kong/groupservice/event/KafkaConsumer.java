@@ -1,12 +1,12 @@
 package me.kong.groupservice.event;
 
 import lombok.RequiredArgsConstructor;
-import me.kong.groupservice.dto.event.GroupMemberIncreaseResponseDto;
+import me.kong.commonlibrary.event.dto.GroupMemberIncreaseResponseDto;
 import me.kong.groupservice.service.GroupService;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
-import static me.kong.groupservice.common.EventConstants.GROUP_MEMBER_INCREASE_RESPONSE;
+import static me.kong.commonlibrary.event.EventConstants.GROUP_MEMBER_INCREASE_RESPONSE;
 
 
 @Service
