@@ -1,8 +1,9 @@
 package me.kong.paymentservice.service;
 
-import me.kong.paymentservice.dto.enums.PaymentStatus;
-import me.kong.paymentservice.dto.event.GroupMemberIncreaseRequestDto;
-import me.kong.paymentservice.dto.event.GroupMemberIncreaseResponseDto;
+import me.kong.commonlibrary.event.dto.GroupMemberIncreaseRequestDto;
+import me.kong.commonlibrary.event.dto.GroupMemberIncreaseResponseDto;
+import me.kong.paymentservice.domain.entity.PaymentStatus;
+
 import me.kong.paymentservice.event.KafkaProducer;
 import me.kong.paymentservice.mapper.GroupMemberIncreaseMapper;
 import me.kong.paymentservice.service.strategy.PayStrategy;
@@ -15,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 
-import static me.kong.paymentservice.common.EventConstants.*;
+import static me.kong.commonlibrary.event.EventConstants.GROUP_MEMBER_INCREASE_RESPONSE;
 import static org.mockito.Mockito.*;
 
 
@@ -58,7 +59,6 @@ public class PayServiceTest {
                 .userId(userId)
                 .additionalMembers(additionalMembers)
                 .amount(amount)
-                .status(PaymentStatus.SUCCESS)
                 .build();
         when(groupMemberIncreaseMapper.toResponse(requestDto, PaymentStatus.SUCCESS))
                 .thenReturn(responseDto);

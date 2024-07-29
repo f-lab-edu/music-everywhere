@@ -1,9 +1,10 @@
 package me.kong.paymentservice.mapper;
 
 
-import me.kong.paymentservice.dto.enums.PaymentStatus;
-import me.kong.paymentservice.dto.event.GroupMemberIncreaseRequestDto;
-import me.kong.paymentservice.dto.event.GroupMemberIncreaseResponseDto;
+import me.kong.commonlibrary.event.dto.GroupMemberIncreaseRequestDto;
+import me.kong.commonlibrary.event.dto.GroupMemberIncreaseResponseDto;
+import me.kong.paymentservice.domain.entity.PaymentStatus;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,7 +16,6 @@ public class GroupMemberIncreaseMapper {
                 .userId(requestDto.getUserId())
                 .additionalMembers(requestDto.getAdditionalMembers())
                 .amount(requestDto.getAmount())
-                .status(status)
                 .build();
     }
 
