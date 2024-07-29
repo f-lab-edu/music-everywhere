@@ -14,8 +14,10 @@ java {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
+
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
@@ -32,6 +34,8 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    implementation 'me.kong:common-library:0.0.3-SNAPSHOT'
 }
 
 tasks.named('test') {

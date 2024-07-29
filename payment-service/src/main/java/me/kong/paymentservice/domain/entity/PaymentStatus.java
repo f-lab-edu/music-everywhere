@@ -1,4 +1,4 @@
-package me.kong.groupservice.dto.enums;
+package me.kong.paymentservice.domain.entity;
 
 public enum PaymentStatus {
     SUCCESS,

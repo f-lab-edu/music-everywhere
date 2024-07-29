@@ -4,7 +4,7 @@ package me.kong.paymentservice.service;
 import lombok.RequiredArgsConstructor;
 import me.kong.paymentservice.domain.entity.PayEvent;
 import me.kong.paymentservice.domain.repository.PayEventRepository;
-import me.kong.paymentservice.dto.enums.PaymentStatus;
+import me.kong.paymentservice.domain.entity.PaymentStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

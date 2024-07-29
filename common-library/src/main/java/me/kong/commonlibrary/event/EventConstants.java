@@ -1,4 +1,4 @@
-package me.kong.paymentservice.common;
+package me.kong.commonlibrary.event;
 
 public class EventConstants {
 

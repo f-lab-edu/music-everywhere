@@ -1,14 +1,15 @@
 package me.kong.paymentservice.service;
 
 import lombok.RequiredArgsConstructor;
-import me.kong.paymentservice.dto.enums.PaymentStatus;
-import me.kong.paymentservice.dto.event.GroupMemberIncreaseRequestDto;
+import me.kong.commonlibrary.event.dto.GroupMemberIncreaseRequestDto;
+import me.kong.paymentservice.domain.entity.PaymentStatus;
 import me.kong.paymentservice.event.KafkaProducer;
 import me.kong.paymentservice.mapper.GroupMemberIncreaseMapper;
 import me.kong.paymentservice.service.strategy.PayStrategy;
 import org.springframework.stereotype.Service;
 
-import static me.kong.paymentservice.common.EventConstants.*;
+import static me.kong.commonlibrary.event.EventConstants.GROUP_MEMBER_INCREASE_RESPONSE;
+
 
 @Service
 @RequiredArgsConstructor

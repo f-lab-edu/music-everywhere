@@ -6,7 +6,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import me.kong.paymentservice.dto.enums.PaymentStatus;
 
 import java.math.BigDecimal;
 

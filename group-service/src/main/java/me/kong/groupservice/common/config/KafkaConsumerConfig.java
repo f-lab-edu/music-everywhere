@@ -1,8 +1,6 @@
 package me.kong.groupservice.common.config;
 
 
-import me.kong.groupservice.dto.event.GroupMemberIncreaseRequestDto;
-import me.kong.groupservice.dto.event.GroupMemberIncreaseResponseDto;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +11,7 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
+import me.kong.commonlibrary.event.dto.GroupMemberIncreaseResponseDto;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -2,7 +2,7 @@ package me.kong.paymentservice.service;
 
 import me.kong.paymentservice.domain.entity.PayEvent;
 import me.kong.paymentservice.domain.repository.PayEventRepository;
-import me.kong.paymentservice.dto.enums.PaymentStatus;
+import me.kong.paymentservice.domain.entity.PaymentStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
