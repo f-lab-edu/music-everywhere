@@ -220,6 +220,28 @@ paths:
         '409':
           description: 이미 가입한 사용자
           
+  /groups/{groupId}/increase-group-size:
+    post:
+      tags:
+        - groups
+      summary: 그룹 인원수 변경
+      description: 그룹 최대 인원수를 증가시킵니다.
+      parameters:
+        - in: path
+          name: groupId
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: size
+          required: true
+          schema:
+            type: integer
+            description: 원하는 그룹의 사이즈. 현재 그룹 사이즈가 10이고, 이 옵션이 25라면 요청 성공 후 그룹의 사이즈는 25가 됨.
+      responses:
+        '200':
+          description: 그룹 사이즈 증가를 위한 결제 요청 성공
+            
   /groups/{groupId}/requests:
     get:
       tags:
