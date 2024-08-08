@@ -11,8 +11,7 @@ info:
     프로젝트 링크:
     - [music-everywhere](https://github.com/f-lab-edu/music-everywhere)
   version: 1.0.0
-servers:
-  - url: /api/
+
 tags:
   - name: users
     description: 회원가입, 사용자 조회 등 사용자의 동작과 인증을 담당합니다.
@@ -24,7 +23,7 @@ tags:
 
 
 paths:
-  /users:
+  /user-service/api/users:
     post:
       tags:
         - users
@@ -61,7 +60,7 @@ paths:
                     type: string
                     example: '중복된 이메일입니다. email : test@email.com'
                     
-  /users/check-email:
+  /user-service/api/users/check-email:
     get:
       tags:
         - users
@@ -90,7 +89,7 @@ paths:
                     type: string
                     example: '중복된 이메일입니다. email : test@email.com'
           
-  /users/{userId}:
+  /user-service/api/users/{userId}:
     get:
       tags:
         - users
@@ -133,7 +132,7 @@ paths:
                     example: '찾으려는 사용자가 없습니다. id : 1'
           
           
-  /groups:
+  /group-service/api/groups:
     post:
       tags:
         - groups
@@ -184,7 +183,7 @@ paths:
                     type: string
                     example: '테스트를 위한 그룹입니다'
   
-  /groups/{groupId}:
+  /group-service/api/groups/{groupId}:
     post:
       tags:
         - groups
@@ -220,7 +219,7 @@ paths:
         '409':
           description: 이미 가입한 사용자
           
-  /groups/{groupId}/increase-group-size:
+  /group-service/api/groups/{groupId}/increase-group-size:
     post:
       tags:
         - groups
@@ -242,7 +241,7 @@ paths:
         '200':
           description: 그룹 사이즈 증가를 위한 결제 요청 성공
             
-  /groups/{groupId}/requests:
+  /group-service/api/groups/{groupId}/requests:
     get:
       tags:
         - groups
@@ -289,7 +288,7 @@ paths:
         '404':
           description: 존재하지 않는 그룹
     
-  /groups/{groupId}/requests/{requestId}:
+  /group-service/api/groups/{groupId}/requests/{requestId}:
     patch:
       tags:
         - groups
@@ -328,7 +327,7 @@ paths:
         '409':
           description: 이미 처리된 요청
           
-  /groups/posts:
+  /group-service/api/groups/posts:
     get:
       tags:
         - posts
@@ -446,7 +445,7 @@ paths:
           description: 권한 부족(가입하지 않은 그룹 등)
           
           
-  /groups/{groupId}/posts:
+  /group-service/api/groups/{groupId}/posts:
     get:
       tags:
         - posts
@@ -612,7 +611,7 @@ paths:
         '403':
           description: 권한 부족(가입하지 않은 그룹 등)
         
-  /groups/{groupId}/posts/{postId}:
+  /group-service/api/groups/{groupId}/posts/{postId}:
     parameters:
       - in: path
         name: groupId
