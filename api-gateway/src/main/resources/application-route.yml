@@ -9,8 +9,8 @@ spring:
         - id: user-service
           uri: lb://user-service
           predicates:
-            - Path=/api/users/**
+            - Path=/user-service/**
         - id: group-service
           uri: lb://group-service
           predicates:
-            - Path=/api/groups/**
+            - Path=/group-service/**
