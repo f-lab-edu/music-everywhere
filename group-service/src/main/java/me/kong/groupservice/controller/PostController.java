@@ -25,7 +25,7 @@ import static me.kong.commonlibrary.constant.HttpStatusResponseEntity.RESPONSE_O
 
 @Slf4j
 @RestController
-@RequestMapping("/api/groups")
+@RequestMapping("/group-service/api/groups")
 @RequiredArgsConstructor
 public class PostController {
 
