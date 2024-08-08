@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import static me.kong.commonlibrary.constant.HttpStatusResponseEntity.RESPONSE_OK;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/user-service/api/users")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
