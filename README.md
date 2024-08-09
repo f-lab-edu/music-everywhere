@@ -54,3 +54,6 @@
 - 도입 과정 --> [CI/CD Pipeline을 구축해보자!](https://velog.io/@hyeok-kong/jenkins%EB%A1%9C-CICD-Pipeline-%EA%B5%AC%EC%B6%95)
 #### 7. 커서 기반 페이징을 선택한 이유 (feat. 성능 테스트 with JMeter)
 - 도입 과정 및 선택 이유 --> [페이징 때문에 서비스가 망하는 과정](https://velog.io/@hyeok-kong/%ED%8E%98%EC%9D%B4%EC%A7%95-%EB%95%8C%EB%AC%B8%EC%97%90-%EC%84%9C%EB%B9%84%EC%8A%A4%EA%B0%80-%EB%A7%9D%ED%95%98%EB%8A%94-%EA%B3%BC%EC%A0%95)
+#### 8. 마이크로서비스 간 통신을 진행하며 한 고민들(분산 트랜잭션, 이벤트 기반 아키텍처)
+- 사고 과정 -> [서비스간 통신을 해보자! - 방법과 선택](https://velog.io/@hyeok-kong/%EC%B9%B4%ED%94%84%EC%B9%B4%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%B4-%EC%84%9C%EB%B9%84%EC%8A%A4%EA%B0%84-%ED%86%B5%EC%8B%A0%EC%9D%84-%ED%95%B4%EB%B3%B4%EC%9E%90),
+[서비스간 통신을 해보자! - 구현과 의문](https://velog.io/@hyeok-kong/%EC%84%9C%EB%B9%84%EC%8A%A4%EA%B0%84-%ED%86%B5%EC%8B%A0%EC%9D%84-%ED%95%B4%EB%B3%B4%EC%9E%90-%EA%B5%AC%ED%98%84%EA%B3%BC-%EC%9D%98%EB%AC%B8)
