@@ -9,6 +9,7 @@ import me.kong.paymentservice.service.strategy.PayStrategy;
 import org.springframework.stereotype.Service;
 
 import static me.kong.commonlibrary.event.EventConstants.GROUP_MEMBER_INCREASE_RESPONSE;
+import static me.kong.paymentservice.domain.entity.PaymentStatus.*;
 
 
 @Service
@@ -21,12 +22,10 @@ public class PayService {
     private final KafkaProducer kafkaProducer;
 
     public void processPayRequest(GroupMemberIncreaseRequestDto dto) {
-        if (payStrategy.process(dto.getAmount(), dto.getUserId())) {
-            payEventService.savePayResult(dto.getAmount(), PaymentStatus.SUCCESS, dto.getUserId());
-
-            kafkaProducer.send(GROUP_MEMBER_INCREASE_RESPONSE, groupMemberIncreaseMapper.toResponse(dto, PaymentStatus.SUCCESS));
-        } else {
-            payEventService.savePayResult(dto.getAmount(), PaymentStatus.FAIL, dto.getUserId());
+        PaymentStatus status = payStrategy.process(dto.getAmount(), dto.getUserId()) ? SUCCESS : FAIL;
+        if (status == SUCCESS) {
+            kafkaProducer.send(GROUP_MEMBER_INCREASE_RESPONSE, groupMemberIncreaseMapper.toResponse(dto, status));
         }
+        payEventService.savePayResult(dto.getAmount(), status, dto.getUserId());
     }
 }
