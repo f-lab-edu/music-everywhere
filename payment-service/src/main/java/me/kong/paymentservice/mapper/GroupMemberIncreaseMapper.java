@@ -20,10 +20,9 @@ public class GroupMemberIncreaseMapper {
                 .build();
     }
 
-    public PayEvent toPayEvent(GroupMemberIncreaseRequestDto requestDto, PaymentStatus status) {
+    public PayEvent toPayEvent(GroupMemberIncreaseRequestDto requestDto) {
         return PayEvent.builder()
                 .amount(requestDto.getAmount())
-                .status(status)
                 .userId(requestDto.getUserId())
                 .baseEvent(requestDto.getEvent())
                 .build();
