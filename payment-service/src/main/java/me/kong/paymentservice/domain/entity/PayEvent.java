@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import me.kong.commonlibrary.event.BaseEvent;
 
 import java.math.BigDecimal;
 
@@ -26,10 +27,14 @@ public class PayEvent {
     @Column(name = "user_id")
     private Long userId;
 
+    @Embedded
+    private BaseEvent baseEvent;
+
     @Builder
-    public PayEvent(BigDecimal amount, PaymentStatus status, Long userId) {
+    public PayEvent(BigDecimal amount, PaymentStatus status, Long userId, BaseEvent baseEvent) {
         this.amount = amount;
         this.status = status;
         this.userId = userId;
+        this.baseEvent = baseEvent;
     }
 }
