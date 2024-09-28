@@ -1,6 +1,8 @@
 package me.kong.commonlibrary.event;
 
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,6 +19,7 @@ public class BaseEvent {
     @Setter
     private LocalDateTime processedAt;
 
+    @Enumerated(EnumType.STRING)
     private Type eventType;
 
     public BaseEvent(Type eventType) {
