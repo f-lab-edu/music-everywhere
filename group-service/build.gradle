@@ -55,6 +55,8 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     implementation 'me.kong:common-library:0.0.3-SNAPSHOT'
+
+    implementation 'io.micrometer:micrometer-registry-prometheus:1.11.0'
 }
 
 dependencyManagement {
