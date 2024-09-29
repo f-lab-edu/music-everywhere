@@ -10,6 +10,7 @@ import me.kong.paymentservice.service.strategy.PayStrategy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import static me.kong.commonlibrary.event.EventConstants.GROUP_MEMBER_INCREASE_RESPONSE;
@@ -44,4 +45,11 @@ public class PayService {
         }
     }
 
+    @Transactional
+    public boolean processPayRequest() {
+        Long tempUserId = 1L;
+        BigDecimal tempAmount = BigDecimal.ZERO;
+
+        return payStrategy.process(tempAmount, tempUserId);
+    }
 }

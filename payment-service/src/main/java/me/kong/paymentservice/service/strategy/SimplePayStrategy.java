@@ -10,6 +10,11 @@ public class SimplePayStrategy implements PayStrategy {
 
     @Override
     public boolean process(BigDecimal amount, Long userId) {
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         return true;
     }
 }

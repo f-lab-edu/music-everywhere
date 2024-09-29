@@ -29,7 +29,7 @@ import static me.kong.commonlibrary.constant.HttpStatusResponseEntity.RESPONSE_O
 
 @Slf4j
 @RestController
-@RequestMapping("/group-service/api/groups")
+@RequestMapping("/api/groups")
 @RequiredArgsConstructor
 public class GroupController {
 
@@ -62,6 +62,17 @@ public class GroupController {
         GroupMemberIncreaseRequestDto dto = memberIncreaseRequestMapper.toDto(groupId, jwtReader.getUserId(), size);
 
         groupService.requestIncreaseGroupSize(dto);
+
+        return RESPONSE_OK;
+    }
+
+    @PostMapping("{groupId}/increase-group-size/rest-template")
+    public ResponseEntity<HttpStatus> increaseGroupSizeRestTemplate(
+            @PathVariable Long groupId,
+            @RequestParam(required = true) Integer size) {
+        GroupMemberIncreaseRequestDto dto = memberIncreaseRequestMapper.toDto(groupId, jwtReader.getUserId(), size);
+
+        groupService.requestIncreaseGroupSizeWithRestTemplate(dto);
 
         return RESPONSE_OK;
     }

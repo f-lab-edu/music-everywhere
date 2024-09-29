@@ -12,8 +12,12 @@ import me.kong.groupservice.domain.repository.GroupRepository;
 import me.kong.groupservice.dto.request.SaveGroupRequestDto;
 import me.kong.groupservice.event.KafkaProducer;
 import me.kong.groupservice.mapper.GroupMapper;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.NoSuchElementException;
 
@@ -28,6 +32,7 @@ public class GroupService {
     private final ProfileService profileService;
     private final GroupMapper groupMapper;
     private final KafkaProducer kafkaProducer;
+    private final RestTemplate restTemplate;
 
     @Transactional
     public Group createNewGroup(SaveGroupRequestDto dto, Long userId) {
@@ -54,6 +59,19 @@ public class GroupService {
     @Transactional(readOnly = true)
     public void requestIncreaseGroupSize(GroupMemberIncreaseRequestDto dto) {
         kafkaProducer.send(GROUP_MEMBER_INCREASE_REQUEST, dto);
+    }
+
+    @Transactional(readOnly = true)
+    public void requestIncreaseGroupSizeWithRestTemplate(GroupMemberIncreaseRequestDto dto) {
+        String url = "http://223.130.152.189:8080/payment-service/api/payment";
+
+        log.info("waiting...");
+        ResponseEntity<HttpStatus> result
+                = restTemplate.exchange(url, HttpMethod.POST, null, HttpStatus.class);
+        log.info("request success");
+        if (result.getStatusCode() != HttpStatus.OK) {
+            throw new RuntimeException("결제 실패");
+        }
     }
 
     @RedisLock(key = "'group-size:'.concat(#groupId)")
