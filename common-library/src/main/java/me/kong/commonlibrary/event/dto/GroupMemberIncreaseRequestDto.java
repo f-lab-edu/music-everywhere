@@ -2,6 +2,7 @@ package me.kong.commonlibrary.event.dto;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import me.kong.commonlibrary.event.BaseEvent;
 
 import java.math.BigDecimal;
@@ -10,6 +11,7 @@ import static me.kong.commonlibrary.util.AmountCalculator.getGroupIncreaseAmount
 
 
 @Getter
+@NoArgsConstructor
 public class GroupMemberIncreaseRequestDto {
     private Long groupId;
     private Long userId;
