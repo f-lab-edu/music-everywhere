@@ -4,6 +4,10 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.5'
 }
 
+ext {
+    springCloudVersion = "2023.0.3"
+}
+
 group = 'me.kong'
 version = '0.0.1-SNAPSHOT'
 
@@ -24,6 +28,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
     implementation 'org.projectlombok:lombok'
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     annotationProcessor 'org.projectlombok:lombok'
 
     runtimeOnly 'com.mysql:mysql-connector-j'
@@ -33,9 +39,16 @@ dependencies {
     testImplementation 'org.springframework.kafka:spring-kafka-test'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     implementation 'me.kong:common-library:0.0.3-SNAPSHOT'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"
+    }
 }
 
 tasks.named('test') {
