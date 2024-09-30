@@ -1,12 +1,16 @@
 package me.kong.groupservice.service;
 
 import lombok.RequiredArgsConstructor;
+import me.kong.commonlibrary.event.dto.UserListRequestDto;
+import me.kong.commonlibrary.event.dto.UserListResponseDto;
 import me.kong.commonlibrary.util.JwtReader;
+import me.kong.groupservice.client.UserServiceClient;
 import me.kong.groupservice.domain.entity.GroupJoinRequest.GroupJoinRequest;
 import me.kong.groupservice.domain.entity.group.Group;
 import me.kong.groupservice.domain.repository.GroupJoinRequestRepository;
 import me.kong.groupservice.dto.request.GroupJoinRequestDto;
 import me.kong.groupservice.dto.request.enums.JoinRequestSearchCondition;
+import me.kong.groupservice.dto.response.GroupJoinResponseDto;
 import me.kong.groupservice.mapper.GroupJoinRequestMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +25,7 @@ public class GroupJoinRequestService {
     private final GroupJoinRequestRepository joinRequestRepository;
     private final GroupJoinRequestMapper joinRequestMapper;
     private final ProfileService profileService;
+    private final UserServiceClient userServiceClient;
 
     @Transactional(readOnly = true)
     public GroupJoinRequest getGroupJoinRequestByRequestId(Long requestId) {
@@ -39,11 +44,43 @@ public class GroupJoinRequestService {
     }
 
     @Transactional(readOnly = true)
-    public List<GroupJoinRequest> getGroupJoinRequestsByGroupIdAndCondition(Long userId, Long groupId, JoinRequestSearchCondition condition) {
-        List<GroupJoinRequest> requests;
-
+    public List<GroupJoinResponseDto> getGroupJoinRequestsByGroupIdAndCondition(Long userId, Long groupId, JoinRequestSearchCondition condition) {
         profileService.checkLoggedInProfileIsGroupManager(userId, groupId);
 
+        List<GroupJoinRequest> requests = getGroupJoinRequests(groupId, condition);
+
+        List<Long> userIds = requests.stream()
+                .map(GroupJoinRequest::getUserId)
+                .toList();
+
+        List<UserListResponseDto> userInfos = userServiceClient.getUserInfo(new UserListRequestDto(userIds));
+
+        List<GroupJoinResponseDto> results = requests.stream()
+                .map(r -> {
+                    return GroupJoinResponseDto.builder()
+                            .requestId(r.getId())
+                            .requestInfo(r.getRequestInfo())
+                            .status(r.getResponse())
+                            .nickname(getNickname(userInfos, r.getUserId()))
+                            .userId(r.getUserId())
+                            .build();
+                })
+                .toList();
+
+        return results;
+    }
+
+    private String getNickname(List<UserListResponseDto> userInfos, Long userId) {
+        return userInfos.stream()
+                .filter(userInfo -> userId.equals(userInfo.getUserId()))
+                .map(UserListResponseDto::getNickname)
+                .findFirst()
+                .orElse(null);
+    }
+
+
+    private List<GroupJoinRequest> getGroupJoinRequests(Long groupId, JoinRequestSearchCondition condition) {
+        List<GroupJoinRequest> requests;
         switch (condition) {
             case PENDING -> {
                 requests = joinRequestRepository.findPendingGroupJoinRequests(groupId);

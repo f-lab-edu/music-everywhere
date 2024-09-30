@@ -40,7 +40,7 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-config'
 	implementation 'org.springframework.cloud:spring-cloud-starter-bus-kafka'
 
-	implementation 'me.kong:common-library:0.0.2-SNAPSHOT'
+	implementation 'me.kong:common-library:0.0.3-SNAPSHOT'
 
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 	runtimeOnly 'com.mysql:mysql-connector-j'

@@ -70,11 +70,9 @@ public class GroupController {
     public ResponseEntity<List<GroupJoinResponseDto>> getGroupRequests(
             @PathVariable Long groupId,
             @RequestParam(name = "status", defaultValue = "PENDING") JoinRequestSearchCondition condition) {
-        List<GroupJoinResponseDto> requests =
-                requestMapper.toDtoList(joinRequestService
-                        .getGroupJoinRequestsByGroupIdAndCondition(jwtReader.getUserId(), groupId, condition));
+        List<GroupJoinResponseDto> results = joinRequestService.getGroupJoinRequestsByGroupIdAndCondition(jwtReader.getUserId(), groupId, condition);
 
-        return new ResponseEntity<>(requests, HttpStatus.OK);
+        return new ResponseEntity<>(results, HttpStatus.OK);
     }
 
     @PatchMapping("{groupId}/requests/{requestId}")
