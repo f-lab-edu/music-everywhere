@@ -43,7 +43,7 @@ public class UserController {
         return ResponseEntity.ok(UserResponseDto.of(user));
     }
 
-    @GetMapping("/list")
+    @PostMapping("/list")
     public ResponseEntity<List<UserListResponseDto>> getUsersByIds(@RequestBody UserListRequestDto dto) {
         return new ResponseEntity<>(userService.getUsersByIds(dto.getUserIds()), HttpStatus.OK);
     }
