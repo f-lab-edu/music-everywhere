@@ -3,6 +3,8 @@ package me.kong.userservice.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import me.kong.commonlibrary.event.dto.UserListRequestDto;
+import me.kong.commonlibrary.event.dto.UserListResponseDto;
 import me.kong.userservice.controller.dto.UserRegisterRequestDto;
 import me.kong.userservice.controller.dto.UserResponseDto;
 import me.kong.userservice.domain.entity.user.User;
@@ -11,12 +13,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static me.kong.commonlibrary.constant.HttpStatusResponseEntity.RESPONSE_OK;
 
 @RestController
-@RequestMapping("/user-service/api/users")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
+
     private final UserService userService;
 
     @PostMapping
@@ -36,5 +41,10 @@ public class UserController {
         User user = userService.findUserById(userId);
 
         return ResponseEntity.ok(UserResponseDto.of(user));
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<UserListResponseDto>> getUsersByIds(@RequestBody UserListRequestDto dto) {
+        return new ResponseEntity<>(userService.getUsersByIds(dto.getUserIds()), HttpStatus.OK);
     }
 }

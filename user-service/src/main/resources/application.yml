@@ -17,4 +17,4 @@ spring:
   cloud:
     config:
       uri: http://223.130.152.189:8084
-      name: payment-service
+      name: user-service

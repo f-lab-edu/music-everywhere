@@ -3,6 +3,7 @@ package me.kong.userservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.kong.commonlibrary.event.dto.UserListResponseDto;
 import me.kong.commonlibrary.exception.common.DuplicateElementException;
 import me.kong.userservice.controller.dto.UserRegisterRequestDto;
 import me.kong.userservice.domain.entity.user.Role;
@@ -12,6 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 
@@ -43,5 +46,15 @@ public class UserService {
     @Transactional(readOnly = true)
     public User findUserById(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("찾으려는 사용자가 없습니다. id : " + id));
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<UserListResponseDto> getUsersByIds(List<Long> ids) {
+        List<User> users = userRepository.findByIds(ids);
+
+        return users.stream()
+                .map(u -> new UserListResponseDto(u.getId(), u.getNickname()))
+                .toList();
     }
 }
