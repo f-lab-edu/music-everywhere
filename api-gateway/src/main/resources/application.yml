@@ -1,0 +1,13 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+  config:
+    import: "configserver:"
+  cloud:
+    config:
+      uri: http://223.130.152.189:8084
+      name: api-gateway
