@@ -4,3 +4,5 @@ server:
 spring:
   application:
     name: config-service
+  profiles:
+    include: config
