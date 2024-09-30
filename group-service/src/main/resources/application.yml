@@ -5,14 +5,15 @@ spring:
   application:
     name: group-service
 
-  jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
-        ddl-auto: none
-
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
 
-  profiles:
-    include: db, route, redis, kafka
+#  profiles:
+#    include: local
+
+  config:
+    import: "configserver:"
+  cloud:
+    config:
+      uri: http://223.130.152.189:8084
+      name: group-service

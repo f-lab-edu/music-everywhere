@@ -1,17 +1,13 @@
 server:
-  port: 8083
+  port: 8080
 
 spring:
   application:
-    name: payment-service
-
-#  profiles:
-#    include: db, kafka
+    name: api-gateway
 
   config:
     import: "configserver:"
-
   cloud:
     config:
       uri: http://223.130.152.189:8084
-      name: payment-service
+      name: api-gateway
