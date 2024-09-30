@@ -41,6 +41,7 @@ dependencies {
     testImplementation 'org.springframework.kafka:spring-kafka-test'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
