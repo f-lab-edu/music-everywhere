@@ -57,3 +57,4 @@
 #### 8. 마이크로서비스 간 통신을 진행하며 한 고민들(분산 트랜잭션, 이벤트 기반 아키텍처)
 - 사고 과정 -> [서비스간 통신을 해보자! - 방법과 선택](https://velog.io/@hyeok-kong/%EC%B9%B4%ED%94%84%EC%B9%B4%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%B4-%EC%84%9C%EB%B9%84%EC%8A%A4%EA%B0%84-%ED%86%B5%EC%8B%A0%EC%9D%84-%ED%95%B4%EB%B3%B4%EC%9E%90),
 [서비스간 통신을 해보자! - 구현과 의문](https://velog.io/@hyeok-kong/%EC%84%9C%EB%B9%84%EC%8A%A4%EA%B0%84-%ED%86%B5%EC%8B%A0%EC%9D%84-%ED%95%B4%EB%B3%B4%EC%9E%90-%EA%B5%AC%ED%98%84%EA%B3%BC-%EC%9D%98%EB%AC%B8)
+- 결제 실패 시 어떻게 해야 할까? -> [왜 결제했는데 적용이 안돼요?](https://velog.io/@hyeok-kong/%EC%99%9C-%EA%B2%B0%EC%A0%9C%ED%96%88%EB%8A%94%EB%8D%B0-%EC%A0%81%EC%9A%A9%EC%9D%B4-%EC%95%88%EB%8F%BC%EC%9A%94)

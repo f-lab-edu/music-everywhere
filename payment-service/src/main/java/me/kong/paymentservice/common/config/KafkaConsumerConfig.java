@@ -64,7 +64,7 @@ public class KafkaConsumerConfig {
     public ConcurrentKafkaListenerContainerFactory<String, GroupMemberIncreaseRequestDto> groupIncreaseKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, GroupMemberIncreaseRequestDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(groupIncreaseConsumerFactory());
-        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
+        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
 
         return factory;
     }

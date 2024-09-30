@@ -28,6 +28,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
     implementation 'org.projectlombok:lombok'
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     annotationProcessor 'org.projectlombok:lombok'
 
     runtimeOnly 'com.mysql:mysql-connector-j'
@@ -37,6 +39,7 @@ dependencies {
     testImplementation 'org.springframework.kafka:spring-kafka-test'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
