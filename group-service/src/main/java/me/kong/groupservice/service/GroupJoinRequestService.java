@@ -3,8 +3,7 @@ package me.kong.groupservice.service;
 import lombok.RequiredArgsConstructor;
 import me.kong.commonlibrary.event.dto.UserListRequestDto;
 import me.kong.commonlibrary.event.dto.UserListResponseDto;
-import me.kong.commonlibrary.util.JwtReader;
-import me.kong.groupservice.client.UserServiceClient;
+import me.kong.groupservice.client.circuitbreaker.UserServiceCircuitBreaker;
 import me.kong.groupservice.domain.entity.GroupJoinRequest.GroupJoinRequest;
 import me.kong.groupservice.domain.entity.group.Group;
 import me.kong.groupservice.domain.repository.GroupJoinRequestRepository;
@@ -25,7 +24,7 @@ public class GroupJoinRequestService {
     private final GroupJoinRequestRepository joinRequestRepository;
     private final GroupJoinRequestMapper joinRequestMapper;
     private final ProfileService profileService;
-    private final UserServiceClient userServiceClient;
+    private final UserServiceCircuitBreaker userServiceClient;
 
     @Transactional(readOnly = true)
     public GroupJoinRequest getGroupJoinRequestByRequestId(Long requestId) {
@@ -53,21 +52,24 @@ public class GroupJoinRequestService {
                 .map(GroupJoinRequest::getUserId)
                 .toList();
 
+        // 여기에 circuit breaker 적용
         List<UserListResponseDto> userInfos = userServiceClient.getUserInfo(new UserListRequestDto(userIds));
 
-        List<GroupJoinResponseDto> results = requests.stream()
-                .map(r -> {
-                    return GroupJoinResponseDto.builder()
-                            .requestId(r.getId())
-                            .requestInfo(r.getRequestInfo())
-                            .status(r.getResponse())
-                            .nickname(getNickname(userInfos, r.getUserId()))
-                            .userId(r.getUserId())
-                            .build();
-                })
-                .toList();
+        if (userInfos.isEmpty()) {
+            for (GroupJoinRequest request : requests) {
+                userInfos.add(new UserListResponseDto(request.getUserId(), request.getNickname()));
+            }
+        }
 
-        return results;
+        return requests.stream()
+                .map(r -> GroupJoinResponseDto.builder()
+                        .requestId(r.getId())
+                        .requestInfo(r.getRequestInfo())
+                        .status(r.getResponse())
+                        .nickname(getNickname(userInfos, r.getUserId()))
+                        .userId(r.getUserId())
+                        .build())
+                .toList();
     }
 
     private String getNickname(List<UserListResponseDto> userInfos, Long userId) {
