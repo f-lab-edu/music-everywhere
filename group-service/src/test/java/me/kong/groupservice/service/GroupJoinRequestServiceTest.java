@@ -2,6 +2,7 @@ package me.kong.groupservice.service;
 
 import me.kong.commonlibrary.util.JwtReader;
 import me.kong.groupservice.client.UserServiceClient;
+import me.kong.groupservice.client.circuitbreaker.UserServiceCircuitBreaker;
 import me.kong.groupservice.domain.entity.GroupJoinRequest.GroupJoinRequest;
 import me.kong.groupservice.domain.entity.group.Group;
 import me.kong.groupservice.domain.repository.GroupJoinRequestRepository;
@@ -38,7 +39,7 @@ class GroupJoinRequestServiceTest {
     GroupJoinRequestMapper groupJoinRequestMapper;
 
     @Mock
-    UserServiceClient userServiceClient;
+    UserServiceCircuitBreaker userServiceClient;
 
 
     GroupJoinRequest request;
