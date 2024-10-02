@@ -13,6 +13,7 @@ import me.kong.groupservice.domain.entity.profile.Profile;
 import me.kong.groupservice.domain.repository.PostRepository;
 import me.kong.groupservice.dto.request.SavePostRequestDto;
 import me.kong.groupservice.dto.request.condition.PostSearchCondition;
+import me.kong.groupservice.dto.response.PostListResponseDto;
 import me.kong.groupservice.mapper.PostMapper;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -64,14 +65,14 @@ public class PostService {
 
     @GroupOnly(role = MEMBER)
     @Transactional(readOnly = true)
-    public Slice<Post> getRecentGroupPosts(Long cursorId, PostSearchCondition cond, int size,  @UserId Long userId, @GroupId Long groupId) {
+    public Slice<PostListResponseDto> getRecentGroupPosts(Long cursorId, PostSearchCondition cond, int size, @UserId Long userId, @GroupId Long groupId) {
         Pageable pageable = PageRequest.of(0, size);
 
         return postRepository.searchRecentPosts(cursorId, cond, pageable);
     }
 
     @Transactional(readOnly = true)
-    public Slice<Post> getRecentPublicPosts(Long cursorId, PostSearchCondition cond, int size) {
+    public Slice<PostListResponseDto> getRecentPublicPosts(Long cursorId, PostSearchCondition cond, int size) {
         Pageable pageable = PageRequest.of(0, size);
 
         return postRepository.searchRecentPosts(cursorId, cond, pageable);
