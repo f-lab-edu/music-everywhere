@@ -22,32 +22,40 @@ public class PostRepositoryImpl implements CustomPostRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Slice<Post> searchRecentPosts(Long cursorId, PostSearchCondition cond, Pageable pageable) {
+    public Slice<Post> searchRecentPosts(Long postId, PostSearchCondition cond, Pageable pageable) {
+        List<Long> postIds = queryFactory
+                .select(post.id)
+                .from(post)
+                .where(
+                        groupIdEq(cond.getGroupId()),
+                        postScopeEq(cond.getPostScope()),
+                        post.state.eq(cond.getState()),
+                        postIdLt(postId)
+                ).orderBy(post.id.desc())
+                .limit(pageable.getPageSize() + 1)
+                .fetch();
+
+        boolean hasNext = false;
+        if (postIds.size() > pageable.getPageSize()) {
+            postIds.remove(pageable.getPageSize());
+            hasNext = true;
+        }
+
         List<Post> content = queryFactory
                 .select(post)
                 .from(post)
                 .join(post.group, group).fetchJoin()
                 .join(post.profile, profile).fetchJoin()
-                .where(
-                        groupIdEq(cond.getGroupId()),
-                        postScopeEq(cond.getPostScope()),
-                        post.state.eq(cond.getState()),
-                        cursorIdLt(cursorId)
-                )
+                .where(post.id.in(postIds))
                 .orderBy(post.id.desc())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
 
-        boolean hasNext = false;
-        if (content.size() > pageable.getPageSize()) {
-            content.remove(pageable.getPageSize());
-            hasNext = true;
-        }
         return new SliceImpl<>(content, pageable, hasNext);
     }
 
-    private BooleanExpression cursorIdLt(Long cursorId) {
-        return cursorId != null ? post.id.lt(cursorId) : null;
+    private BooleanExpression postIdLt(Long postId) {
+        return postId != null ? post.id.lt(postId) : null;
     }
 
     private BooleanExpression postScopeEq(PostScope postScope) {
