@@ -43,3 +43,4 @@ application-db.yml
 application-local.yml
 application-redis.yml
 application-kafka.yml
+/src/test/resources/application.yml

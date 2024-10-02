@@ -49,7 +49,6 @@ class PostServiceTest {
     Long postId = 3L;
     Long userId = 4L;
 
-    String title = "테스트 제목";
     String content = "테스트 내용";
 
     PostScope scope = PostScope.GROUP_ONLY;
@@ -130,7 +129,6 @@ class PostServiceTest {
 
     private SavePostRequestDto makeSavePostRequestDto(PostScope scope) {
         return savePostRequestDto = SavePostRequestDto.builder()
-                .title(title)
                 .content(content)
                 .scope(scope)
                 .build();
@@ -138,7 +136,6 @@ class PostServiceTest {
 
     private Post makePost(State state) {
         return Post.builder()
-                .title(title)
                 .content(content)
                 .postScope(scope)
                 .state(state)

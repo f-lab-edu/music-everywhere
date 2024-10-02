@@ -16,7 +16,6 @@ public class PostMapper {
 
     public Post toEntity(SavePostRequestDto dto, Group group, Profile profile) {
         return Post.builder()
-                .title(dto.getTitle())
                 .content(dto.getContent())
                 .postScope(dto.getScope())
                 .state(State.GENERAL)
@@ -28,7 +27,6 @@ public class PostMapper {
     public PostResponseDto toDto(Post post, Profile profile) {
         return PostResponseDto.builder()
                 .id(post.getId())
-                .title(post.getTitle())
                 .content(post.getContent())
                 .nickname(profile.getNickname())
                 .profileId(profile.getId())
@@ -40,7 +38,6 @@ public class PostMapper {
     public Slice<PostListResponseDto> toDto(Slice<Post> posts) {
         return posts.map(p -> PostListResponseDto.builder()
                 .id(p.getId())
-                .title(p.getTitle())
                 .content(p.getContent())
                 .groupId(p.getGroup().getId())
                 .profileId(p.getProfile().getId())
