@@ -45,9 +45,9 @@ public class PostController {
                 .state(State.GENERAL)
                 .build();
 
-        Slice<Post> posts = postService.getRecentPublicPosts(cursorId, cond, size);
+        Slice<PostListResponseDto> postLists = postService.getRecentPublicPosts(cursorId, cond, size);
 
-        return new ResponseEntity<>(postMapper.toDto(posts), HttpStatus.OK);
+        return new ResponseEntity<>(postLists, HttpStatus.OK);
     }
 
     @GetMapping("/{groupId}/posts")
@@ -62,9 +62,9 @@ public class PostController {
                 .state(state)
                 .build();
 
-        Slice<Post> posts = postService.getRecentGroupPosts(cursorId, cond, size, jwtReader.getUserId(), groupId);
+        Slice<PostListResponseDto> postLists = postService.getRecentGroupPosts(cursorId, cond, size, jwtReader.getUserId(), groupId);
 
-        return new ResponseEntity<>(postMapper.toDto(posts), HttpStatus.OK);
+        return new ResponseEntity<>(postLists, HttpStatus.OK);
     }
 
     @PostMapping("/{groupId}/posts")
