@@ -18,8 +18,6 @@ public class Post extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
-
     private String content;
 
     @Column(name = "scope")
@@ -39,8 +37,7 @@ public class Post extends BaseTimeEntity {
     private Profile profile;
 
     @Builder
-    public Post(String title, String content, PostScope postScope, State state, Group group, Profile profile) {
-        this.title = title;
+    public Post(String content, PostScope postScope, State state, Group group, Profile profile) {
         this.content = content;
         this.postScope = postScope;
         this.state = state;

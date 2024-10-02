@@ -12,8 +12,6 @@ import me.kong.groupservice.domain.entity.post.PostScope;
 public class SavePostRequestDto {
 
     @NotEmpty
-    private String title;
-
     private String content;
 
     @NotNull

@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @Builder
 public class PostListResponseDto {
     private Long id;
-    private String title;
     private String content;
     private Long groupId;
     private Long profileId;
