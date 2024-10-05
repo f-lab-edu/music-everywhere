@@ -1,5 +1,10 @@
 server:
   port: 8082
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
 
 spring:
   application:
@@ -8,12 +13,12 @@ spring:
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
 
-#  profiles:
-#    include: local
+  profiles:
+    include: local
 
-  config:
-    import: "configserver:"
-  cloud:
-    config:
-      uri: http://223.130.152.189:8084
-      name: group-service
+#  config:
+#    import: "configserver:"
+#  cloud:
+#    config:
+#      uri: http://223.130.152.189:8084
+#      name: group-service

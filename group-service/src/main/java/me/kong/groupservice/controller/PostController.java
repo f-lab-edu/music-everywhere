@@ -38,11 +38,13 @@ public class PostController {
     @GetMapping("/posts")
     public ResponseEntity<Slice<PostListResponseDto>> getPostList(
             @RequestParam(required = false) Long cursorId,
-            @RequestParam(required = false, defaultValue = "10") int size) {
+            @RequestParam(required = false, defaultValue = "10") int size,
+            @RequestParam(required = false) String searchText) {
 
         PostSearchCondition cond = PostSearchCondition.builder()
                 .postScope(PostScope.PUBLIC)
                 .state(State.GENERAL)
+                .searchText(searchText)
                 .build();
 
         Slice<PostListResponseDto> postLists = postService.getRecentPublicPosts(cursorId, cond, size);

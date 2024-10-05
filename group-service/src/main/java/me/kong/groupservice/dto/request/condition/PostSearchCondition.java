@@ -9,7 +9,8 @@ import me.kong.groupservice.domain.entity.post.PostScope;
 @Getter
 @Builder
 public class PostSearchCondition {
-    Long groupId;
-    PostScope postScope;
-    State state;
+    private Long groupId;
+    private PostScope postScope;
+    private State state;
+    private String searchText;
 }

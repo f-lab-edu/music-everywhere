@@ -31,8 +31,10 @@ public class PostRepositoryImpl implements CustomPostRepository {
                         groupIdEq(cond.getGroupId()),
                         postScopeEq(cond.getPostScope()),
                         post.state.eq(cond.getState()),
+                        postSearchExp(cond.getSearchText()),
                         postIdLt(postId)
-                ).orderBy(post.id.desc())
+                )
+                .orderBy(post.id.desc())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
 
@@ -65,7 +67,12 @@ public class PostRepositoryImpl implements CustomPostRepository {
         return postScope != null ? post.postScope.eq(postScope) : null;
     }
 
+    private BooleanExpression postSearchExp(String text) {
+        return text != null ? post.content.contains(text) : null;
+    }
+
     private BooleanExpression groupIdEq(Long groupId) {
         return groupId != null ? post.group.id.eq(groupId) : null;
     }
+
 }
