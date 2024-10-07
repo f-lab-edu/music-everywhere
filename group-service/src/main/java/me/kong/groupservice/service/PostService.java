@@ -9,7 +9,9 @@ import me.kong.groupservice.common.annotation.UserId;
 import me.kong.groupservice.domain.entity.State;
 import me.kong.groupservice.domain.entity.group.Group;
 import me.kong.groupservice.domain.entity.post.Post;
+import me.kong.groupservice.domain.entity.post.PostESDocument;
 import me.kong.groupservice.domain.entity.profile.Profile;
+import me.kong.groupservice.domain.repository.PostESRepository;
 import me.kong.groupservice.domain.repository.PostRepository;
 import me.kong.groupservice.dto.request.SavePostRequestDto;
 import me.kong.groupservice.dto.request.condition.PostSearchCondition;
@@ -19,6 +21,8 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import static me.kong.groupservice.domain.entity.profile.GroupRole.*;
@@ -31,6 +35,7 @@ public class PostService {
     private final PostMapper postMapper;
     private final ProfileService profileService;
     private final GroupService groupService;
+    private final PostESRepository postESRepository;
 
 
     @GroupOnly(role = MEMBER)
@@ -65,16 +70,37 @@ public class PostService {
 
     @GroupOnly(role = MEMBER)
     @Transactional(readOnly = true)
-    public Slice<PostListResponseDto> getRecentGroupPosts(Long cursorId, PostSearchCondition cond, int size, @UserId Long userId, @GroupId Long groupId) {
-        Pageable pageable = PageRequest.of(0, size);
+    public Slice<PostListResponseDto> getRecentGroupPosts(PostSearchCondition cond, @UserId Long userId, @GroupId Long groupId) {
+        Pageable pageable = PageRequest.of(0, cond.getSize());
 
-        return postRepository.searchRecentPosts(cursorId, cond, pageable);
+        return postRepository.searchRecentPosts(cond, pageable);
     }
 
     @Transactional(readOnly = true)
-    public Slice<PostListResponseDto> getRecentPublicPosts(Long cursorId, PostSearchCondition cond, int size) {
-        Pageable pageable = PageRequest.of(0, size);
+    public Slice<PostListResponseDto> getRecentPublicPosts(PostSearchCondition cond) {
+        Slice<PostListResponseDto> postLists;
+        Pageable pageable;
 
-        return postRepository.searchRecentPosts(cursorId, cond, pageable);
+        if (cond.getSearchText() == null) {
+            pageable = PageRequest.of(0, cond.getSize());
+            postLists = postRepository.searchRecentPosts(cond, pageable);
+        } else {
+            pageable = PageRequest.of(cond.getPage(), cond.getSize(), Sort.by("id").descending());
+            postLists = textSearchByES(cond, pageable);
+        }
+
+        return postLists;
+    }
+
+    private Slice<PostListResponseDto> textSearchByES(PostSearchCondition cond, Pageable pageable) {
+        Slice<PostListResponseDto> postLists;
+        Page<PostESDocument> postDocs = postESRepository.findByKeyword(cond.getSearchText(), pageable);
+
+        List<Long> postIds = postDocs.stream()
+                .map(PostESDocument::getId)
+                .toList();
+
+        postLists = postRepository.findPostListsByIds(postIds);
+        return postLists;
     }
 }
