@@ -8,5 +8,5 @@ import org.springframework.data.domain.Slice;
 
 public interface CustomPostRepository {
 
-    Slice<PostListResponseDto> searchRecentPosts(Long cursorId, PostSearchCondition cond, Pageable pageable);
+    Slice<PostListResponseDto> searchRecentPosts(PostSearchCondition cond, Pageable pageable);
 }

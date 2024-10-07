@@ -38,16 +38,20 @@ public class PostController {
     @GetMapping("/posts")
     public ResponseEntity<Slice<PostListResponseDto>> getPostList(
             @RequestParam(required = false) Long cursorId,
-            @RequestParam(required = false, defaultValue = "10") int size,
+            @RequestParam(required = false, defaultValue = "10") Integer size,
+            @RequestParam(required = false, defaultValue = "0") Integer page,
             @RequestParam(required = false) String searchText) {
 
         PostSearchCondition cond = PostSearchCondition.builder()
                 .postScope(PostScope.PUBLIC)
                 .state(State.GENERAL)
                 .searchText(searchText)
+                .postId(cursorId)
+                .size(size)
+                .page(page)
                 .build();
 
-        Slice<PostListResponseDto> postLists = postService.getRecentPublicPosts(cursorId, cond, size);
+        Slice<PostListResponseDto> postLists = postService.getRecentPublicPosts(cond);
 
         return new ResponseEntity<>(postLists, HttpStatus.OK);
     }
@@ -64,7 +68,7 @@ public class PostController {
                 .state(state)
                 .build();
 
-        Slice<PostListResponseDto> postLists = postService.getRecentGroupPosts(cursorId, cond, size, jwtReader.getUserId(), groupId);
+        Slice<PostListResponseDto> postLists = postService.getRecentGroupPosts(cond, jwtReader.getUserId(), groupId);
 
         return new ResponseEntity<>(postLists, HttpStatus.OK);
     }

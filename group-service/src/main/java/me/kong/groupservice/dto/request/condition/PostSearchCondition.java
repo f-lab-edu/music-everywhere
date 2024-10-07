@@ -13,4 +13,8 @@ public class PostSearchCondition {
     private PostScope postScope;
     private State state;
     private String searchText;
+
+    private Long postId;
+    private Integer page;
+    private Integer size;
 }
