@@ -23,7 +23,7 @@ public class PostRepositoryImpl implements CustomPostRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Slice<PostListResponseDto> searchRecentPosts(Long postId, PostSearchCondition cond, Pageable pageable) {
+    public Slice<PostListResponseDto> searchRecentPosts(PostSearchCondition cond, Pageable pageable) {
         List<Long> postIds = queryFactory
                 .select(post.id)
                 .from(post)
@@ -31,8 +31,10 @@ public class PostRepositoryImpl implements CustomPostRepository {
                         groupIdEq(cond.getGroupId()),
                         postScopeEq(cond.getPostScope()),
                         post.state.eq(cond.getState()),
-                        postIdLt(postId)
-                ).orderBy(post.id.desc())
+                        postSearchExp(cond.getSearchText()),
+                        postIdLt(cond.getPostId())
+                )
+                .orderBy(post.id.desc())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
 
@@ -65,7 +67,12 @@ public class PostRepositoryImpl implements CustomPostRepository {
         return postScope != null ? post.postScope.eq(postScope) : null;
     }
 
+    private BooleanExpression postSearchExp(String text) {
+        return text != null ? post.content.contains(text) : null;
+    }
+
     private BooleanExpression groupIdEq(Long groupId) {
         return groupId != null ? post.group.id.eq(groupId) : null;
     }
+
 }

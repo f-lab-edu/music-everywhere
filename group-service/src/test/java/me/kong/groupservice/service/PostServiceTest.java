@@ -3,18 +3,23 @@ package me.kong.groupservice.service;
 import me.kong.groupservice.domain.entity.State;
 import me.kong.groupservice.domain.entity.group.Group;
 import me.kong.groupservice.domain.entity.post.Post;
+import me.kong.groupservice.domain.entity.post.PostESDocument;
 import me.kong.groupservice.domain.entity.post.PostScope;
 import me.kong.groupservice.domain.entity.profile.Profile;
+import me.kong.groupservice.domain.repository.PostESRepository;
 import me.kong.groupservice.domain.repository.PostRepository;
 import me.kong.groupservice.dto.request.SavePostRequestDto;
+import me.kong.groupservice.dto.request.condition.PostSearchCondition;
 import me.kong.groupservice.mapper.PostMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -29,6 +34,9 @@ class PostServiceTest {
 
     @Mock
     PostRepository postRepository;
+
+    @Mock
+    PostESRepository postESRepository;
 
     @Mock
     PostMapper postMapper;
@@ -112,6 +120,44 @@ class PostServiceTest {
 
         //then
         assertEquals(State.DELETED, post.getState());
+    }
+
+    @Test
+    void findWithoutKeywords() {
+        //given
+        PostSearchCondition cond = PostSearchCondition.builder()
+                .postScope(PostScope.PUBLIC)
+                .size(10)
+                .build();
+
+        Pageable pageable = PageRequest.of(0, cond.getSize());
+
+        //when
+        postService.getRecentPublicPosts(cond);
+
+        //then
+        verify(postRepository, times(1)).searchRecentPosts(cond, pageable);
+    }
+
+    @Test
+    void findWithKeywords() {
+        //given
+        String searchText = "test";
+        PostSearchCondition cond = PostSearchCondition.builder()
+                .postScope(PostScope.PUBLIC)
+                .page(0)
+                .size(10)
+                .searchText(searchText)
+                .build();
+        Pageable pageable = PageRequest.of(0, cond.getSize(), Sort.by("id").descending());
+        Page<PostESDocument> page = new PageImpl<>(new ArrayList<>());
+        when(postESRepository.findByKeyword(searchText, pageable)).thenReturn(page);
+
+        //when
+        postService.getRecentPublicPosts(cond);
+
+        //then
+        verify(postESRepository, times(1)).findByKeyword(cond.getSearchText(), pageable);
     }
 
 
